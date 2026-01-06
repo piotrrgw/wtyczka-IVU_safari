@@ -1,14 +1,6 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-W05T4L1HFD"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-W05T4L1HFD');
-  </script>
-
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Czas Niebezpieczny</title>
@@ -34,41 +26,26 @@
 
     .controls {
       display: flex;
-      gap: 8px;
-      margin-bottom: 12px;
+      gap: 10px;
+      margin-bottom: 15px;
     }
 
     button {
       flex: 1;
-      padding: 10px 4px;
-      background-color: #007AFF;
-      color: white;
+      padding: 10px;
+      font-size: 14px;
+      font-weight: 600;
       border: none;
       border-radius: 6px;
-      font-size: 14px;
       cursor: pointer;
-      font-weight: 500;
-      transition: background 0.2s;
+      color: white;
     }
 
-    button:hover {
-      background-color: #005ecb;
-    }
-    
-    button:focus {
-      outline: 2px solid #000;
-      outline-offset: 2px;
-    }
+    #btn-calc { background-color: #007aff; }
+    #btn-insert { background-color: #34c759; }
+    button:active { opacity: 0.8; }
 
-    button.secondary {
-      background-color: #34C759;
-    }
-
-    button.secondary:hover {
-      background-color: #248a3d;
-    }
-
-    .sum-box {
+    #sum {
       background: #f2f2f7;
       padding: 10px;
       border-radius: 8px;
@@ -118,20 +95,19 @@
   </style>
 </head>
 <body>
-
   <h1>Narzędzia Czasu</h1>
-
+  
   <div class="controls">
-    <button type="button" id="btn-calc" aria-label="Przelicz czasy niebezpieczne">Przelicz</button>
-    <button type="button" id="btn-insert" class="secondary" aria-label="Wstaw sumę do komentarza">Wstaw</button>
+    <button id="btn-calc">PRZELICZ</button>
+    <button id="btn-insert">WSTAW</button>
   </div>
 
-  <div class="sum-box" id="sum" role="status">Czas niebezpieczny: -</div>
-  <div id="list" aria-live="polite">Kliknij "Przelicz" aby pobrać dane.</div>
+  <div id="sum">Czas niebezpieczny: -</div>
+  <div id="list">Kliknij PRZELICZ, aby pobrać dane.</div>
 
   <footer>
-      Wersja aplikacji: v1.8<br>
-      Współautorzy: Gemini, Piotr M 🚂 & Thundo
+    Współautorzy: <a href="https://github.com/piotrrgw" target="_blank">Piotr M 🚂</a>, <a href="https://github.com/Thundo" target="_blank">Thundo</a> & Gemini<br>
+    Wersja aplikacji: v2.4
   </footer>
 
   <script src="popup.js"></script>
