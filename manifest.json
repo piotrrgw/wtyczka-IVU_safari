@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "Czas Niebezpieczny (Safari)",
+  "version": "1.7",
+  "description": "Liczy czas niebezpieczny i wstawia do komentarza (Wersja Safari)",
+  "permissions": ["activeTab", "scripting"],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://irena1.intercity.pl/*"],
+      "all_frames": true,
+      "match_about_blank": true,
+      "js": ["content.js"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["popup.html"],
+      "matches": ["https://irena1.intercity.pl/*"]
+    }
+  ]
+}
