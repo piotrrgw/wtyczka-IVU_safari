@@ -1,17 +1,28 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-W05T4L1HFD"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-W05T4L1HFD');
+  </script>
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Czas Niebezpieczny</title>
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      width: 300px;
+      width: 320px;
       margin: 0;
       padding: 12px;
       color: #333;
       background-color: #fff;
+      display: flex;
+      flex-direction: column;
+      min-height: 300px;
     }
 
     h1 {
@@ -29,12 +40,12 @@
 
     button {
       flex: 1;
-      padding: 8px 4px;
-      background-color: #007AFF; /* Safari Blue */
+      padding: 10px 4px;
+      background-color: #007AFF;
       color: white;
       border: none;
       border-radius: 6px;
-      font-size: 13px;
+      font-size: 14px;
       cursor: pointer;
       font-weight: 500;
       transition: background 0.2s;
@@ -43,13 +54,14 @@
     button:hover {
       background-color: #005ecb;
     }
-
-    button:active {
-      background-color: #00408a;
+    
+    button:focus {
+      outline: 2px solid #000;
+      outline-offset: 2px;
     }
 
     button.secondary {
-      background-color: #34C759; /* Green for Insert */
+      background-color: #34C759;
     }
 
     button.secondary:hover {
@@ -64,17 +76,19 @@
       font-weight: bold;
       text-align: center;
       font-size: 14px;
+      border: 1px solid #e5e5ea;
     }
 
     #list {
+      flex-grow: 1;
       max-height: 200px;
       overflow-y: auto;
-      margin-bottom: 5px;
+      margin-bottom: 15px;
     }
 
     .list-item-row {
       border-bottom: 1px solid #eee;
-      padding: 6px 0;
+      padding: 8px 0;
     }
     
     .list-item-header {
@@ -85,10 +99,22 @@
 
     .list-item-details {
       font-size: 11px;
-      color: #666;
+      color: #555;
     }
     
-    /* Version: 1.2 */
+    footer {
+        margin-top: auto;
+        padding-top: 10px;
+        border-top: 1px solid #eee;
+        font-size: 10px;
+        color: #777;
+        text-align: center;
+    }
+    
+    footer a {
+        color: #777;
+        text-decoration: none;
+    }
   </style>
 </head>
 <body>
@@ -100,8 +126,13 @@
     <button type="button" id="btn-insert" class="secondary" aria-label="Wstaw sumę do komentarza">Wstaw</button>
   </div>
 
-  <div class="sum-box" id="sum">Czas niebezpieczny: -</div>
+  <div class="sum-box" id="sum" role="status">Czas niebezpieczny: -</div>
   <div id="list" aria-live="polite">Kliknij "Przelicz" aby pobrać dane.</div>
+
+  <footer>
+      Wersja aplikacji: v1.8<br>
+      Współautorzy: Gemini, Piotr M 🚂 & Thundo
+  </footer>
 
   <script src="popup.js"></script>
 </body>
