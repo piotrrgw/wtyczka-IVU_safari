@@ -23,7 +23,7 @@
   "content_scripts": [
     {
       "matches": [
-        "https://irena1.intercity.pl/*"
+        "https://irena1.intercity.pl/mbweb/main/matter/desktop/main-menu*"
       ],
       "all_frames": true,
       "match_about_blank": true,
