@@ -1,24 +1,46 @@
 {
   "manifest_version": 3,
   "name": "Czas Niebezpieczny (Safari)",
-  "version": "1.7",
-  "description": "Liczy czas niebezpieczny i wstawia do komentarza (Wersja Safari)",
-  "permissions": ["activeTab", "scripting"],
+  "version": "1.8",
+  "description": "Liczy czas niebezpieczny i wstawia do komentarza. Autorzy: Piotr M 🚂, Thundo & Gemini",
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  },
   "action": {
-    "default_popup": "popup.html"
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon.png",
+      "32": "icon.png",
+      "48": "icon.png"
+    }
   },
   "content_scripts": [
     {
-      "matches": ["https://irena1.intercity.pl/*"],
+      "matches": [
+        "https://irena1.intercity.pl/*"
+      ],
       "all_frames": true,
       "match_about_blank": true,
-      "js": ["content.js"]
+      "js": [
+        "content.js"
+      ]
     }
   ],
   "web_accessible_resources": [
     {
-      "resources": ["popup.html"],
-      "matches": ["https://irena1.intercity.pl/*"]
+      "resources": [
+        "popup.html",
+        "icon.png"
+      ],
+      "matches": [
+        "https://irena1.intercity.pl/*"
+      ]
     }
   ]
 }
