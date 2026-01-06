@@ -47,7 +47,3 @@ Projekt powstał przy współpracy:
 * [Piotr M 🚂](https://github.com/piotrrgw)
 * [Thundo](https://github.com/Thundo)
 * Gemini (Model AI)
-
----
-**Wersja aplikacji: v2.4**
-*Zgodność z EAA (European Accessibility Act) oraz WCAG 2.1.*
