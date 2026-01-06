@@ -1,44 +1,51 @@
 # Czas Niebezpieczny (Safari Extension)
 
 **Wersja:** 1.8
-**Data wydania:** 2026-01-06
-**Autorzy:** 
-* Piotr M 🚂
-* Thundo ([GitHub](https://github.com/Thundo54))
-* Gemini
+**Autorzy:** [Piotr M 🚂](https://github.com/piotrrgw), [Thundo](https://github.com/Thundo) & Gemini
 
 ## Opis
-Rozszerzenie do przeglądarki Safari, stworzone w celu automatyzacji obliczania "czasu niebezpiecznego" w systemie kart pracy (Intercity). Wtyczka skanuje otwartą kartę, identyfikuje czynności uznawane za niebezpieczne, weryfikuje ich czas trwania zgodnie z regulaminem i sumuje minuty, które należy wpisać do raportu.
+Rozszerzenie do przeglądarki Safari stworzone w celu automatyzacji obliczania "czasu niebezpiecznego" w systemie kart pracy. Wtyczka skanuje aktywną kartę, identyfikuje czynności niebezpieczne (Objęcie, Przekazanie, Próba hamulca), weryfikuje ich czas trwania zgodnie z regulaminem i sumuje minuty gotowe do wpisania w raporcie.
+
+Aplikacja jest w pełni zgodna z wytycznymi **EAA** oraz **WCAG**, a jej interfejs został zoptymalizowany do wyświetlania zarówno na komputerach Mac, jak i urządzeniach mobilnych (iPhone/iPad).
 
 ## Główne Funkcje
-
-1.  **Automatyczne Wykrywanie:** Skanuje wszystkie ramki (frames) na stronie w poszukiwaniu listy czynności.
-2.  **Inteligentna Kalkulacja:**
-    * **DK Objęcie pociągu:** Czas rzeczywisty, ale nie więcej niż **20 minut**.
-    * **DK Przekazanie pociągu:** Czas rzeczywisty, ale nie więcej niż **10 minut**.
+1.  **Inteligentna Kalkulacja:**
+    * **DK Objęcie pociągu:** Czas rzeczywisty, limitowany do **20 minut**.
+    * **DK Przekazanie pociągu:** Czas rzeczywisty, limitowany do **10 minut**.
     * **DK Próba hamulca:** Liczony pełny czas rzeczywisty.
-3.  **Wizualizacja:** Podświetla wykryte czynności na liście kolorami (żółty, niebieski, fioletowy) dla łatwej weryfikacji.
-4.  **Wstawianie Raportu:** Jednym kliknięciem wstawia sumę (np. `N: 25m`) do pola komentarza na karcie.
+2.  **Wizualizacja:** Podświetla wykryte czynności na liście kolorami w celu łatwej weryfikacji bezpośrednio na stronie.
+3.  **Wstawianie Raportu:** Automatycznie dodaje sumę (np. `N: 25m`) do pola komentarza, usuwając poprzednie wpisy tego typu.
 
-## Instalacja
+## Instalacja na macOS (Safari)
 
-1.  Upewnij się, że masz włączone menu "Programowanie" (Develop) w Safari.
-2.  Zbuduj pakiet rozszerzenia przy użyciu Xcode lub odpowiedniego konwertera dla Safari Web Extensions.
-3.  Załaduj rozszerzenie jako "Niespakowane rozszerzenie" (Unpacked) lub zainstaluj zbudowaną aplikację.
+1.  Pobierz repozytorium na dysk.
+2.  Otwórz **Safari** i wejdź w `Ustawienia` (Cmd + ,).
+3.  W karcie `Zaawansowane` zaznacz na dole opcję: **"Pokazuj menu Programowanie w pasku menu"**.
+4.  Z nowego menu `Programowanie` wybierz **"Zezwalaj na nierozpoznane rozszerzenia"**.
+5.  Uruchom **Xcode** (dostępny w App Store), wybierz `File -> Open` i wskaż folder z wtyczką.
+6.  Kliknij przycisk **Run** (Play) w Xcode. Rozszerzenie zostanie zbudowane i dodane do Safari.
+7.  Wróć do Safari, wejdź w `Ustawienia -> Rozszerzenia` i zaznacz checkbox przy **"Czas Niebezpieczny"**.
+
+## Instalacja na iOS (Safari)
+
+### Metoda 1: Aplikacja Userscripts (Najszybsza)
+1.  Pobierz aplikację **Userscripts** z App Store.
+2.  Włącz rozszerzenie w `Ustawienia -> Safari -> Rozszerzenia -> Userscripts`.
+3.  Utwórz nowy skrypt dla domeny `irena1.intercity.pl`.
+4.  Wklej połączony kod z plików `content.js` oraz `popup.js`.
+
+### Metoda 2: Xcode (Natywne Rozszerzenie)
+1.  Uruchom terminal na komputerze Mac w folderze projektu.
+2.  Użyj konwertera Apple:
+    ```bash
+    xcrun safari-web-extension-converter .
+    ```
+3.  W Xcode wybierz cel (Target) dla **iOS** i uruchom go na podłączonym iPhonie.
+4.  Włącz wtyczkę w `Ustawienia -> Safari -> Rozszerzenia` na telefonie.
 
 ## Użycie
+1.  Otwórz edycję karty pracy w systemie Irena.
+2.  Uruchom rozszerzenie z menu Safari (ikona puzzla lub `Aa`).
+3.  Kliknij **Przelicz**, aby pobrać dane.
+4.  Sprawdź poprawność na liście i kliknij **Wstaw**, aby zaktualizować pole komentarza.
 
-1.  Wejdź na stronę edycji karty w systemie `irena1.intercity.pl`.
-2.  Kliknij ikonę rozszerzenia na pasku narzędzi.
-3.  Kliknij przycisk **"Przelicz"**.
-    * Lista czynności zostanie wyświetlona w oknie wtyczki.
-    * Na stronie czynności zostaną podświetlone.
-4.  Jeśli suma jest poprawna, kliknij **"Wstaw"**, aby dodać wpis do pola komentarza.
-
-## Wymagania Techniczne
-* Manifest V3
-* Uprawnienia: `activeTab`, `scripting`
-* Zgodność z WCAG i EAA (dostępność)
-
----
-*Wygenerowano przy wsparciu AI.*
