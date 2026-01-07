@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         Czas Niebezpieczny (Mobile v2.7)
+// @name         Czas Niebezpieczny (Mobile v2.8)
 // @namespace    http://tampermonkey.net/
-// @version      2.7
+// @version      2.8
 // @description  Czytelna nakładka iOS z auto-aktualizacją. Autorzy: Piotr M 🚂, Thundo & Gemini
 // @author       Piotr M 🚂, Thundo & Gemini
 // @match        https://irena1.intercity.pl/*
@@ -47,8 +47,8 @@
         <div id="cn-res">Suma: -</div>
         <div id="cn-l">Pobierz dane z karty...</div>
         <div class="cn-ft">
-            Autorzy: <a href="https://github.com/piotrrgw">Piotr M</a>, <a href="https://github.com/Thundo54">Thundo</a> & Gemini<br>
-            Wersja aplikacji: v2.6
+            Autorzy: <a href="https://github.com/piotrrgw">Piotr M 🚂</a>, <a href="https://github.com/Thundo54">Thundo</a> & Gemini<br>
+            Wersja aplikacji: v2.7
         </div>
     `;
     document.body.appendChild(box);
@@ -69,9 +69,16 @@
 
         items.forEach(item => {
             const typeInp = item.querySelector('.actual-duty-component-type input');
-            const type = typeInp ? typeInp.value : "";
+            const changedLabel = item.querySelector('.actual-duty-component-type .changed-label');
             
-            if (!/Objęcie|Przekazanie|Próba|Prace Manewrowe/.test(type)) return;
+            // Pobieramy tekst z etykiety (widocznej dla użytkownika) lub z inputa
+            let typeText = changedLabel ? changedLabel.textContent.trim() : (typeInp ? typeInp.value : "");
+            
+            // Dodatkowe sprawdzenie po kodzie data-val (11243 to Prace Manewrowe KP)
+            const dataVal = typeInp ? typeInp.getAttribute('data-val') : "";
+            if (dataVal === "11243") typeText = "DK Prace Manewrowe KP";
+
+            if (!/Objęcie|Przekazanie|Próba|Prace Manewrowe/.test(typeText)) return;
 
             const s = item.querySelector('.actual-duty-time-field-start input')?.value;
             const e = item.querySelector('.actual-duty-time-field-end input')?.value;
@@ -81,11 +88,11 @@
                 let d = p(e) - p(s); if (d < 0) d += 1440;
                 
                 let c = d;
-                if (type.includes("Objęcie")) c = Math.min(d, 20);
-                else if (type.includes("Przekazanie")) c = Math.min(d, 10);
+                if (typeText.includes("Objęcie")) c = Math.min(d, 20);
+                else if (typeText.includes("Przekazanie")) c = Math.min(d, 10);
                 
                 total += c;
-                list.innerHTML += `<div class="cn-item"><b>${s}-${e}</b>: ${c} min<br><small>${type}</small></div>`;
+                list.innerHTML += `<div class="cn-item"><b>${s}-${e}</b>: ${c} min<br><small>${typeText}</small></div>`;
             }
         });
         document.getElementById('cn-res').innerText = `Suma: ${total} min`;
