@@ -52,7 +52,7 @@
     const box = document.createElement('div');
     box.id = 'cn-box';
     box.innerHTML = `
-        <div class="cn-head"><span class="cn-t">Kalkulator CN</span><span class="cn-x">×</span></div>
+        <div class="cn-head"><span class="cn-t">Czas Niebezpieczny IVU</span><span class="cn-x">×</span></div>
         <div class="cn-btns"><button class="cn-b" id="cn-c">Przelicz</button><button class="cn-b" id="cn-i">Wstaw</button></div>
         <div id="cn-res" aria-live="polite">Suma: -</div>
         <div id="cn-l">Gotowy do pracy...</div>
