@@ -23,7 +23,7 @@ Zalecana metoda z obsługą automatycznych aktualizacji.
 1.  Zainstaluj darmową aplikację **Userscripts** z App Store.
 2.  Włącz rozszerzenie: `Ustawienia` -> `Safari` -> `Rozszerzenia` -> `Userscripts` (ustaw na *Pozwól*).
 3.  **Instalacja skryptu:**
-    * Kliknij w link do surowego pliku skryptu na GitHubie: `https://raw.githubusercontent.com/[TWÓJ_USER]/[REPEZYTORIUM]/main/iOS/czas-niebezpieczny_iOS-safari.js`.
+    * Kliknij w link do surowego pliku skryptu na GitHubie: `https://raw.githubusercontent.com/piotrrgw/wtyczka-IVU_safari/main/iOS/czas-niebezpieczny_iOS-safari.js`.
     * Aplikacja Userscripts powinna automatycznie wykryć skrypt i zapytać o instalację.
     * *Alternatywnie:* Skopiuj zawartość pliku `iOS/czas-niebezpieczny_iOS-safari.js` i wklej go ręcznie w aplikacji.
 
