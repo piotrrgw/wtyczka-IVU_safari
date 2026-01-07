@@ -1,17 +1,19 @@
 // ==UserScript==
-// @name         Czas Niebezpieczny (Mobile v2.4)
+// @name         Czas Niebezpieczny (Mobile v2.5)
 // @namespace    http://tampermonkey.net/
-// @version      2.4
-// @description  Czytelna nakładka iOS. Bez GTM. Autorzy: Piotr M 🚂, Thundo & Gemini
+// @version      2.5
+// @description  Czytelna nakładka iOS z auto-aktualizacją. Autorzy: Piotr M 🚂, Thundo & Gemini
 // @author       Piotr M 🚂, Thundo & Gemini
 // @match        https://irena1.intercity.pl/*
 // @grant        none
+// @updateURL    https://raw.githubusercontent.com/piotrrgw/wtyczka-IVU_safari/main/iOS/czas-niebezpieczny_iOS-safari.js
+// @downloadURL  https://raw.githubusercontent.com/piotrrgw/wtyczka-IVU_safari/main/iOS/czas-niebezpieczny_iOS-safari.js
 // ==/UserScript==
 
 /*
- * Version: 2.4
- * Updated: 2026-01-06
- * Changes: Fixed readability and authorship.
+ * Version: 2.5
+ * Updated: 2026-01-07
+ * Changes: Added updateURL and downloadURL for auto-update support.
  */
 
 (function() {
@@ -77,7 +79,7 @@
         <div id="cn-l">Gotowy.</div>
         <div class="cn-ft">
             Autorzy: Piotr M 🚂, <a href="https://github.com/Thundo">Thundo</a> & Gemini<br>
-            Wersja aplikacji: v2.4
+            Wersja aplikacji: v2.5
         </div>
     `;
     document.body.appendChild(box);
