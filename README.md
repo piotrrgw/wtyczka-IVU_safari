@@ -1,47 +1,56 @@
-# Czas Niebezpieczny (Safari Extension)
+# Czas Niebezpieczny - Rozszerzenie dla systemów IVU (Irena)
 
-![Wersja](https://img.shields.io/badge/wersja-v2.5-blue)
-![Zgodność](https://img.shields.io/badge/zgodność-WCAG%20%2F%20EAA-green)
-![Platforma](https://img.shields.io/badge/platforma-iOS%20%7C%20macOS-lightgrey)
+Profesjonalne narzędzie wspomagające pracowników w automatycznym wyliczaniu tzw. **czasu niebezpiecznego** w systemie Irena (intercity.pl). Narzędzie dostępne jest jako pełne rozszerzenie dla przeglądarki Safari (macOS) oraz jako skrypt użytkownika (iOS/Android).
 
-Profesjonalne rozszerzenie do przeglądarki Safari wspomagające pracowników w automatycznym wyliczaniu tzw. **czasu niebezpiecznego** w systemie Irena. Aplikacja inteligentnie analizuje wpisy w karcie pracy i przygotowuje gotowe podsumowanie do raportu.
+## 🚀 Kluczowe Funkcje
+* **Automatyczne Obliczenia:** System rozpoznaje czynności i stosuje limity:
+    * **DK Objęcie pociągu:** limit do 20 minut.
+    * **DK Przekazanie pociągu:** limit do 10 minut.
+    * **DK Próba hamulca:** pełny czas rzeczywisty.
+    * **DK Prace Manewrowe KP:** pełny czas rzeczywisty (Nowość!).
+* **Integracja:** Automatyczne wstawianie wyniku (np. `N: 25m`) do komentarza w karcie pracy.
+* **Dostępność:** Pełna zgodność ze standardami WCAG i EAA. Interfejs dostosowany do urządzeń mobilnych.
 
-## 🚀 Główne Funkcje
+---
 
-* **Automatyczne Rozpoznawanie Czynności:** System identyfikuje wpisy takie jak *Objęcie pociągu*, *Przekazanie pociągu* oraz *Próba hamulca*.
-* **Inteligentne Limity:** * **DK Objęcie:** automatyczne ograniczenie do **20 min**.
-    * **DK Przekazanie:** automatyczne ograniczenie do **10 min**.
-    * **DK Próba hamulca:** liczone w pełnym wymiarze czasu rzeczywistego.
-* **Integracja z Raportem:** Jednym kliknięciem wstawia zsumowany wynik (np. `N: 25m`) do pola komentarza.
-* **Auto-aktualizacja (iOS):** Skrypt automatycznie sprawdza dostępność nowej wersji na GitHubie.
+## 📲 Instrukcja instalacji - Android (Prosty sposób)
 
-## 🛠 Instalacja
+Jeśli korzystasz z urządzenia z systemem Android, wykonaj poniższe kroki, aby zainstalować narzędzie:
 
-### 📱 iOS (iPhone / iPad) - Metoda Userscripts
-Zalecana metoda z obsługą automatycznych aktualizacji.
+1. **Zainstaluj przeglądarkę:** Pobierz i zainstaluj **Firefox** ze sklepu Google Play.
+2. **Dodaj rozszerzenie:** Otwórz Firefox, wejdź w menu (trzy kropki) -> **Dodatki** i zainstaluj **Tampermonkey**.
+3. **Dodaj skrypt:** * Skopiuj link do skryptu: `https://raw.githubusercontent.com/piotrrgw/wtyczka-IVU_safari/main/iOS/czas-niebezpieczny_iOS-safari.js`
+   * Otwórz panel Tampermonkey w przeglądarce, wybierz "Dodaj nowy skrypt".
+   * Wklej skopiowany kod (lub wybierz opcję instalacji z adresu URL) i zapisz.
+4. **Gotowe!** Po wejściu na stronę systemu Irena, na ekranie zobaczysz ikonę stopera ⏱️.
 
-1.  Zainstaluj darmową aplikację **Userscripts** z App Store.
-2.  Włącz rozszerzenie: `Ustawienia` -> `Safari` -> `Rozszerzenia` -> `Userscripts` (ustaw na *Pozwól*).
-3.  **Instalacja skryptu:**
-    * Kliknij w link do surowego pliku skryptu na GitHubie: `https://raw.githubusercontent.com/piotrrgw/wtyczka-IVU_safari/main/iOS/czas-niebezpieczny_iOS-safari.js`.
-    * Aplikacja Userscripts powinna automatycznie wykryć skrypt i zapytać o instalację.
-    * *Alternatywnie:* Skopiuj zawartość pliku `iOS/czas-niebezpieczny_iOS-safari.js` i wklej go ręcznie w aplikacji.
+---
 
-### 💻 macOS (Safari)
-1.  Pobierz repozytorium i otwórz folder `macOS/` w programie **Xcode**.
-2.  W Safari włącz menu `Programowanie` (`Ustawienia` -> `Zaawansowane`).
-3.  W menu `Programowanie` zaznacz opcję **Zezwalaj na nierozpoznane rozszerzenia**.
-4.  Uruchom projekt w Xcode (Build & Run).
+## 💻 Instrukcja instalacji - macOS / iOS
 
-## 📖 Instrukcja Użycia
+### Safari (macOS)
+1. Pobierz folder `macOS`.
+2. Otwórz projekt w Xcode i uruchom, aby zainstalować rozszerzenie w Safari.
+3. Włącz rozszerzenie w ustawieniach przeglądarki Safari (Zakładka "Rozszerzenia").
 
-1.  Otwórz system **Irena** i wejdź w edycję wybranej karty pracy.
-2.  Kliknij ikonę **⏱️** (na iOS) lub ikonę rozszerzenia w pasku Safari (macOS).
-3.  Kliknij przycisk **PRZELICZ**.
-4.  Kliknij **WSTAW** – suma zostanie dodana do komentarza.
+### Safari (iOS)
+1. Zainstaluj aplikację **Userscripts** (dostępna w App Store).
+2. Włącz rozszerzenie Userscripts w ustawieniach Safari.
+3. Dodaj plik `czas-niebezpieczny_iOS-safari.js` do folderu skryptów aplikacji.
+
+---
+
+## 🛠️ Informacje techniczne
+* **Wersja macOS:** v1.8
+* **Wersja iOS/Android:** v2.6
+* **Brak śledzenia:** Projekt nie wykorzystuje Google Tag Manager ani innych systemów analitycznych.
+
+---
 
 ## 👥 Współautorzy
-Projekt powstał przy współpracy:
-* [Piotr M 🚂](https://github.com/piotrrgw)
-* [Thundo](https://github.com/Thundo)
-* Gemini (Model AI)
+* **Piotr M** ([GitHub](https://github.com/piotrrgw))
+* **Thundo** ([GitHub](https://github.com/Thundo54))
+* **Gemini** (Model AI)
+
+---
+*Wersja aplikacji: v2.6 | Piotr M 🚂 & Gemini*
