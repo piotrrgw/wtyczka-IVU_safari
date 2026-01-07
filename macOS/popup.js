@@ -1,7 +1,6 @@
 /*
- * Version: 1.7
- * Created: 2026-01-04
- * Description: Fix: Uses Direct Injection to force scraping in all frames immediately.
+ * Wersja aplikacji: v1.8
+ * Autorzy: Piotr M, Thundo & Gemini
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -9,15 +8,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnInsert = document.getElementById('btn-insert');
   const sumEl = document.getElementById('sum');
   const listEl = document.getElementById('list');
+  const footerEl = document.querySelector('.footer');
 
-  // Zmienna globalna do przechowywania ID ramki, w której znaleźliśmy dane
-  // Potrzebna, żeby wiedzieć gdzie wysłać polecenie "Wstaw"
+  // Dynamiczna stopka
+  if (footerEl) {
+    footerEl.innerHTML = `Współautorzy: Piotr M 🚂, Thundo & Gemini<br>Wersja aplikacji: v1.8`;
+  }
+
   let foundDataFrameId = null;
 
-  // --- FUNKCJA SKRAPUJĄCA (Działa wewnątrz strony) ---
-  // Ta funkcja zostanie wstrzyknięta do każdej ramki na stronie
   function scrapeDataFromPage() {
-    // Funkcja pomocnicza czasu (wewnątrz scope'u wstrzyknięcia)
     function timeToMinutes(t) {
       if (!t) return 0;
       const [h, m] = t.split(":").map(Number);
@@ -25,15 +25,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const listItems = document.querySelectorAll(".component-info.list-item");
-    if (!listItems || listItems.length === 0) return null; // Brak danych w tej ramce
+    if (!listItems || listItems.length === 0) return null;
 
     const details = [];
 
     listItems.forEach(item => {
-      // Reset tła (żeby nie nakładać kolorów wielokrotnie)
       item.style.background = "";
-
-      // 1. Pobieranie typu (Input lub Label)
       let type = "";
       const typeInput = item.querySelector('.actual-duty-component-type input');
       if (typeInput && typeInput.value) {
@@ -46,14 +43,13 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!type) return;
       type = type.trim();
 
-      // 2. Filtrowanie
       const isObjecie = type.includes("DK Objęcie pociągu");
       const isPrzekazanie = type.includes("DK Przekazanie pociągu");
       const isProba = type.includes("DK Próba hamulca");
+      const isManewry = type.includes("DK Prace Manewrowe KP");
 
-      if (!isObjecie && !isPrzekazanie && !isProba) return;
+      if (!isObjecie && !isPrzekazanie && !isProba && !isManewry) return;
 
-      // 3. Pobieranie czasu
       const startInput = item.querySelector('.actual-duty-time-field-start input[type="time"]');
       const endInput = item.querySelector('.actual-duty-time-field-end input[type="time"]');
 
@@ -62,116 +58,57 @@ document.addEventListener('DOMContentLoaded', () => {
       const end = endInput.value;
       if (!start || !end) return;
 
-      // 4. Obliczenia
       let realMinutes = timeToMinutes(end) - timeToMinutes(start);
       if (realMinutes < 0) realMinutes += 1440; 
 
       let countedMinutes = realMinutes;
-
-      // 5. Kolorowanie i limity
       if (isObjecie) {
         countedMinutes = Math.min(realMinutes, 20);
-        item.style.background = "rgba(255, 235, 59, 0.25)";
+        item.style.background = "rgba(255, 235, 59, 0.2)";
       } else if (isPrzekazanie) {
         countedMinutes = Math.min(realMinutes, 10);
-        item.style.background = "rgba(33, 150, 243, 0.20)";
-      } else if (isProba) {
-        item.style.background = "rgba(79, 20, 241, 0.2)";
+        item.style.background = "rgba(33, 150, 243, 0.15)";
+      } else if (isProba || isManewry) {
+        item.style.background = "rgba(76, 175, 80, 0.15)";
       }
 
-      details.push({
-        start, end, type, realMinutes, countedMinutes
-      });
+      details.push({ start, end, type, realMinutes, countedMinutes });
     });
 
     return details;
   }
-  // --- KONIEC FUNKCJI SKRAPUJĄCEJ ---
 
-
-  // Obsługa przycisku PRZELICZ
   btnCalc.addEventListener('click', (e) => {
     e.preventDefault();
-    listEl.textContent = "Skanowanie ramek...";
-    foundDataFrameId = null; // Reset
-
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      if (!tabs.length) return;
-      const tabId = tabs[0].id;
-
-      // Wstrzykujemy funkcję scrapeDataFromPage do WSZYSTKICH ramek
       chrome.scripting.executeScript({
-        target: { tabId: tabId, allFrames: true },
+        target: { tabId: tabs[0].id, allFrames: true },
         func: scrapeDataFromPage
       }, (results) => {
-        if (chrome.runtime.lastError || !results) {
-          console.warn("Script error:", chrome.runtime.lastError);
-          listEl.textContent = "Błąd dostępu do strony.";
-          return;
-        }
-
-        // Szukamy ramki, która zwróciła tablicę z danymi (nie null)
-        const validResult = results.find(r => r.result !== null && Array.isArray(r.result));
-
+        const validResult = results.find(r => r.result !== null);
         if (validResult) {
-          foundDataFrameId = validResult.frameId; // Zapisujemy ID ramki na później!
+          foundDataFrameId = validResult.frameId;
           const details = validResult.result;
-          
-          // Oblicz sumę
           const total = details.reduce((sum, d) => sum + d.countedMinutes, 0);
-          sumEl.textContent = `Czas niebezpieczny: ${total} min`;
-          listEl.innerHTML = "";
-
-          if (details.length === 0) {
-            listEl.textContent = "Znaleziono listę, ale brak czynności niebezpiecznych.";
-          } else {
-            details.forEach(item => {
-              const div = document.createElement("div");
-              div.className = "list-item-row";
-              div.innerHTML = `
-                <div class="list-item-header">${item.start} - ${item.end} (${item.type})</div>
-                <div class="list-item-details">Rzeczywisty: ${item.realMinutes}m | Liczony: ${item.countedMinutes}m</div>
-              `;
-              listEl.appendChild(div);
-            });
-          }
-
+          sumEl.textContent = `Suma: ${total} min`;
+          listEl.innerHTML = details.map(d => `
+            <div class="list-item-row">
+              <strong>${d.start}-${d.end}</strong>: ${d.countedMinutes}m<br><small>${d.type}</small>
+            </div>`).join('');
         } else {
-          listEl.textContent = "Brak danych. Upewnij się, że jesteś w edycji karty.";
-          sumEl.textContent = "Czas niebezpieczny: -";
+          listEl.textContent = "Brak danych do przeliczenia.";
         }
       });
     });
   });
 
-  // Obsługa przycisku WSTAW
   btnInsert.addEventListener('click', (e) => {
     e.preventDefault();
-    
-    // Jeśli nie przeliczyliśmy wcześniej, nie wiemy gdzie wstawić
-    if (foundDataFrameId === null) {
-      alert("Najpierw kliknij PRZELICZ, aby znaleźć odpowiednią ramkę.");
-      return;
-    }
-
+    if (foundDataFrameId === null) return alert("Najpierw kliknij Przelicz.");
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      // Wysyłamy wiadomość TYLKO do znalezionej wcześniej ramki
-      chrome.tabs.sendMessage(
-        tabs[0].id, 
-        { type: "INSERT_DATA" }, 
-        { frameId: foundDataFrameId }, 
-        (response) => {
-          if (chrome.runtime.lastError) {
-            alert("Błąd komunikacji: " + chrome.runtime.lastError.message);
-          } else if (response && response.success) {
-            const originalText = btnInsert.textContent;
-            btnInsert.textContent = "Gotowe!";
-            setTimeout(() => btnInsert.textContent = originalText, 1500);
-          } else {
-            alert(response && response.message ? response.message : "Błąd wstawiania.");
-          }
-        }
-      );
+      chrome.tabs.sendMessage(tabs[0].id, { type: "INSERT_DATA" }, { frameId: foundDataFrameId }, (resp) => {
+        if (resp && resp.success) btnInsert.textContent = "Wstawiono!";
+      });
     });
   });
 });
