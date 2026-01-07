@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         Czas Niebezpieczny (Mobile v2.8)
+// @name         Czas Niebezpieczny (Mobile v2.8.1)
 // @namespace    http://tampermonkey.net/
-// @version      2.8
+// @version      2.8.1
 // @description  Czytelna nakładka iOS z auto-aktualizacją. Autorzy: Piotr M 🚂, Thundo & Gemini
 // @author       Piotr M 🚂, Thundo & Gemini
 // @match        https://irena1.intercity.pl/*
@@ -11,7 +11,7 @@
 // ==/UserScript==
 
 /*
- * Version: 2.6
+ * Version: 2.8.1
  * Updated: 2026-01-07
  * Changes: Dodano obsługę "DK Prace Manewrowe KP".
  */
