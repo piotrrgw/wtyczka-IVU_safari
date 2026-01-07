@@ -1,10 +1,8 @@
 /*
- * Version: 1.7
- * Created: 2026-01-04
- * Description: Handles data insertion requests.
+ * Wersja aplikacji: v1.8
+ * Autorzy: Piotr M (https://github.com/piotrrgw), Thundo (https://github.com/Thundo54) & Gemini
  */
 
-// Te funkcje są tu potrzebne, gdybyśmy chcieli przeliczyć ponownie przy wstawianiu
 function timeToMinutes(t) {
   if (!t) return 0;
   const [h, m] = t.split(":").map(Number);
@@ -32,8 +30,9 @@ function calculateDangerDetails() {
     const isObjecie = type.includes("DK Objęcie pociągu");
     const isPrzekazanie = type.includes("DK Przekazanie pociągu");
     const isProba = type.includes("DK Próba hamulca");
+    const isManewry = type.includes("DK Prace Manewrowe KP");
 
-    if (!isObjecie && !isPrzekazanie && !isProba) return;
+    if (!isObjecie && !isPrzekazanie && !isProba && !isManewry) return;
 
     const startInput = item.querySelector('.actual-duty-time-field-start input[type="time"]');
     const endInput = item.querySelector('.actual-duty-time-field-end input[type="time"]');
@@ -49,7 +48,6 @@ function calculateDangerDetails() {
     let countedMinutes = realMinutes;
     if (isObjecie) countedMinutes = Math.min(realMinutes, 20);
     else if (isPrzekazanie) countedMinutes = Math.min(realMinutes, 10);
-    // Próba hamulca - bez limitu (liczy cały czas)
 
     details.push({ countedMinutes });
   });
@@ -65,10 +63,7 @@ function insertToComment(totalMinutes) {
   text = text.replace(/\n?N:\s*\d+m/g, "").trimEnd();
 
   if (totalMinutes > 0) {
-    textarea.value = text
-      ? `${text}\nN: ${totalMinutes}m`
-      : `N: ${totalMinutes}m`;
-    
+    textarea.value = text ? `${text}\nN: ${totalMinutes}m` : `N: ${totalMinutes}m`;
     textarea.dispatchEvent(new Event('input', { bubbles: true }));
     return { success: true };
   } else {
@@ -76,10 +71,8 @@ function insertToComment(totalMinutes) {
   }
 }
 
-// Listener obsługuje tylko WSTAWIANIE
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (msg.type === "INSERT_DATA") {
-    // Przeliczamy na świeżo przed wstawieniem
     const details = calculateDangerDetails();
     const total = details.reduce((sum, d) => sum + d.countedMinutes, 0);
     const result = insertToComment(total);
