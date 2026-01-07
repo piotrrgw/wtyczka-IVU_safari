@@ -78,7 +78,7 @@
             const dataVal = typeInp ? typeInp.getAttribute('data-val') : "";
             if (dataVal === "11243") typeText = "DK Prace Manewrowe KP";
 
-            if (!/Objęcie|Przekazanie|Próba|Prace Manewrowe/.test(typeText)) return;
+            if (!/Objęcie|Przekazanie|Próba|Manewrowe/.test(typeText)) return;
 
             const s = item.querySelector('.actual-duty-time-field-start input')?.value;
             const e = item.querySelector('.actual-duty-time-field-end input')?.value;
