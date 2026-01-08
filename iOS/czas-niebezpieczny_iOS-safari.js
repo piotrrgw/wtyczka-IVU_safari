@@ -58,7 +58,7 @@
         <div id="cn-l">Gotowy do pracy...</div>
         <div class="cn-ft">
             Autorzy: <a href="https://github.com/piotrrgw">Piotr M 🚂</a>, <a href="https://github.com/Thundo54">Thundo</a> & Gemini<br>
-            Wersja aplikacji: v2.8
+            Wersja aplikacji: v2.8.3
         </div>
     `;
     document.body.appendChild(box);
