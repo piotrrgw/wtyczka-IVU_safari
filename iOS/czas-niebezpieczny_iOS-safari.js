@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         Czas Niebezpieczny (Mobile v2.8.4)
+// @name         Czas Niebezpieczny (Mobile v2.8.5)
 // @namespace    http://tampermonkey.net/
-// @version      2.8.4
+// @version      2.8.5
 // @description  Czytelna nakładka iOS z auto-aktualizacją. Autorzy: Piotr M 🚂, Thundo & Gemini
 // @author       Piotr M 🚂, Thundo & Gemini
 // @match        https://irena1.intercity.pl/*
@@ -11,7 +11,7 @@
 // ==/UserScript==
 
 /*
- * Version: 2.8.4
+ * Version: 2.8.5
  * Updated: 2026-01-07
  * Changes: Dodano obsługę "DK Prace Manewrowe KP".
  */
@@ -58,7 +58,7 @@
         <div id="cn-l">Gotowy do pracy...</div>
         <div class="cn-ft">
             Autorzy: <a href="https://github.com/piotrrgw">Piotr M 🚂</a>, <a href="https://github.com/Thundo54">Thundo</a> & Gemini<br>
-            Wersja aplikacji: v2.8.4
+            Wersja aplikacji: v2.8.5
         </div>
     `;
     document.body.appendChild(box);
@@ -130,7 +130,7 @@
         if (!commentArea) return alert("Nie znaleziono pola komentarza!");
         
         let currentText = commentArea.value.replace(/\n?N:\s*\d+m/g, "").trimEnd();
-        commentArea.value = currentText ? `${currentText}\nN: ${totalMinutes}m` : `N: ${totalMinutes}min.`;
+        commentArea.value = currentText ? `${currentText}\nN: ${totalMinutes}min.` : `N: ${totalMinutes}min.`;
         
         commentArea.dispatchEvent(new Event('input', { bubbles: true }));
         alert("Suma została wstawiona.");
