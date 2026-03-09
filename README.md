@@ -1,6 +1,6 @@
-# Czas Niebezpieczny - Rozszerzenie dla systemów IVU (Irena / Portal Intercity)
+# Czas Niebezpieczny - Rozszerzenie dla systemów IVU (Irena / Portal)
 
-Profesjonalne narzędzie wspomagające pracowników w automatycznym wyliczaniu tzw. **czasu niebezpiecznego** w systemach Irena oraz Portal Intercity (intercity.pl). Narzędzie jest aplikacją w pełni zgodną z EAA i WCAG, przygotowaną do wyświetlania na urządzeniach z małymi ekranami. Dostępne jest jako pełne rozszerzenie dla przeglądarki Safari (macOS) oraz jako skrypt użytkownika (iOS/Android).
+Profesjonalne narzędzie wspomagające pracowników w automatycznym wyliczaniu tzw. **czasu niebezpiecznego** w systemach Irena oraz Portal IVU. Narzędzie jest aplikacją w pełni zgodną z EAA i WCAG, przygotowaną do wyświetlania na urządzeniach z małymi ekranami. Dostępne jest jako pełne rozszerzenie dla przeglądarki Safari (macOS) oraz jako skrypt użytkownika (iOS/Android).
 
 ## 🚀 Kluczowe Funkcje
 * **Automatyczne Obliczenia:** System rozpoznaje czynności i stosuje limity:
@@ -47,5 +47,11 @@ Skrypt napisany z myślą o iOS doskonale działa również na smartfonach z sys
 * **Prywatność:** Projekt nie wykorzystuje Google Tag Manager (GTM) ani żadnych innych systemów analitycznych.
 
 ---
-Współautorzy: Piotr M 🚂 & Gemini
+
+* **Piotr M** ([GitHub](https://github.com/piotrrgw))
+* **Thundo** ([GitHub](https://github.com/Thundo54))
+* **Gemini** (Model AI)
+
+---
+
 Wersja aplikacji: v2.9
