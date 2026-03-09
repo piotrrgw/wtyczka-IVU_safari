@@ -1,19 +1,20 @@
 // ==UserScript==
-// @name         Czas Niebezpieczny (Mobile v2.8.5)
+// @name         Czas Niebezpieczny (Mobile v2.9)
 // @namespace    http://tampermonkey.net/
-// @version      2.8.5
+// @version      2.9
 // @description  Czytelna nakładka iOS z auto-aktualizacją. Autorzy: Piotr M 🚂, Thundo & Gemini
 // @author       Piotr M 🚂, Thundo & Gemini
 // @match        https://irena1.intercity.pl/*
+// @match        https://portal.intercity.pl/*
 // @grant        none
 // @updateURL    https://raw.githubusercontent.com/piotrrgw/wtyczka-IVU_safari/main/iOS/czas-niebezpieczny_iOS-safari.js
 // @downloadURL  https://raw.githubusercontent.com/piotrrgw/wtyczka-IVU_safari/main/iOS/czas-niebezpieczny_iOS-safari.js
 // ==/UserScript==
 
 /*
- * Version: 2.8.5
- * Updated: 2026-01-07
- * Changes: Dodano obsługę "DK Prace Manewrowe KP".
+ * Version: 2.9
+ * Updated: 2026-03-09
+ * Changes: Dodano obsługę witryny portal.intercity.pl. Zgodność z WCAG i EAA.
  */
 
 (function() {
@@ -57,8 +58,8 @@
         <div id="cn-res" aria-live="polite">Suma: -</div>
         <div id="cn-l">Gotowy do pracy...</div>
         <div class="cn-ft">
-            Autorzy: <a href="https://github.com/piotrrgw">Piotr M 🚂</a>, <a href="https://github.com/Thundo54">Thundo</a> & Gemini<br>
-            Wersja aplikacji: v2.8.5
+            Współautorzy: <a href="https://github.com/piotrrgw">Piotr M 🚂</a>, <a href="https://github.com/Thundo54">Thundo</a> & Gemini<br>
+            Wersja aplikacji: v2.9
         </div>
     `;
     document.body.appendChild(box);
@@ -90,14 +91,11 @@
             const input = item.querySelector('.actual-duty-component-type input');
             const label = item.querySelector('.actual-duty-component-type .changed-label');
             
-            // Rozpoznawanie typu
             const id = input?.getAttribute('data-val');
             const currentName = label ? label.textContent.trim() : (input ? input.value : "");
             
-            // Sprawdzenie reguł (po ID lub po nazwie)
             let rule = COMPONENT_RULES[id];
             if (!rule) {
-                // Szukanie reguły po fragmencie nazwy, jeśli ID nie pasuje
                 const foundKey = Object.keys(COMPONENT_RULES).find(key => currentName.includes(COMPONENT_RULES[key].name));
                 if (foundKey) rule = COMPONENT_RULES[foundKey];
             }
@@ -109,7 +107,7 @@
             
             if (start && end) {
                 let duration = parseTime(end) - parseTime(start);
-                if (duration < 0) duration += 1440; // Obsługa przejścia przez północ
+                if (duration < 0) duration += 1440; 
                 
                 const counted = rule.limit ? Math.min(duration, rule.limit) : duration;
                 totalMinutes += counted;
@@ -130,7 +128,7 @@
         if (!commentArea) return alert("Nie znaleziono pola komentarza!");
         
         let currentText = commentArea.value.replace(/\n?N:\s*\d+m/g, "").trimEnd();
-        commentArea.value = currentText ? `${currentText}\nN: ${totalMinutes}min.` : `N: ${totalMinutes}min.`;
+        commentArea.value = currentText ? `${currentText}\nN: ${totalMinutes}m` : `N: ${totalMinutes}m`;
         
         commentArea.dispatchEvent(new Event('input', { bubbles: true }));
         alert("Suma została wstawiona.");
