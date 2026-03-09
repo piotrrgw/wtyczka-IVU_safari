@@ -18,7 +18,7 @@ Profesjonalne narzędzie wspomagające pracowników w automatycznym wyliczaniu t
 Skrypt napisany z myślą o iOS doskonale działa również na smartfonach z systemem Android. Aby go uruchomić, należy zainstalować przeglądarkę obsługującą dodatki:
 
 1. **Zainstaluj przeglądarkę Firefox:** Pobierz i zainstaluj aplikację **Firefox** ze sklepu Google Play.
-2. **Dodaj rozszerzenie Tampermonkey:** Otwórz przeglądarkę Firefox, wejdź w menu (trzy kropki) -> **Dodatki**, a następnie wyszukaj i zainstaluj rozszerzenie **Tampermonkey**(https://www.tampermonkey.net).
+2. **Dodaj rozszerzenie Tampermonkey:** Otwórz przeglądarkę Firefox, wejdź w menu (trzy kropki) -> **Dodatki**, a następnie wyszukaj i zainstaluj rozszerzenie **Tampermonkey** ([LINK](https://www.tampermonkey.net)).
 3. **Zainstaluj skrypt:** * Skopiuj poniższy link do skryptu:
      `https://raw.githubusercontent.com/piotrrgw/wtyczka-IVU_safari/main/iOS/czas-niebezpieczny_iOS-safari.js`
    * Otwórz panel Tampermonkey w przeglądarce i wybierz opcję dodania nowego skryptu.
