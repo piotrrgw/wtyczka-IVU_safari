@@ -1,115 +1,114 @@
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Czas Niebezpieczny</title>
-  <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      width: 320px;
-      margin: 0;
-      padding: 12px;
-      color: #333;
-      background-color: #fff;
-      display: flex;
-      flex-direction: column;
-      min-height: 300px;
+/*
+ * Wersja aplikacji: v1.9
+ * Autorzy: Piotr M 🚂, Thundo & Gemini
+ */
+
+document.addEventListener('DOMContentLoaded', () => {
+  const btnCalc = document.getElementById('btn-calc');
+  const btnInsert = document.getElementById('btn-insert');
+  const sumEl = document.getElementById('sum');
+  const listEl = document.getElementById('list');
+  const footerEl = document.querySelector('.footer');
+
+  // Dynamiczna stopka
+  if (footerEl) {
+    footerEl.innerHTML = `Współautorzy: Piotr M 🚂, Thundo & Gemini<br>Wersja aplikacji: v1.9`;
+  }
+
+  let foundDataFrameId = null;
+
+  function scrapeDataFromPage() {
+    function timeToMinutes(t) {
+      if (!t) return 0;
+      const [h, m] = t.split(":").map(Number);
+      return h * 60 + m;
     }
 
-    h1 {
-      font-size: 16px;
-      margin: 0 0 10px 0;
-      border-bottom: 1px solid #ddd;
-      padding-bottom: 5px;
-    }
+    const listItems = document.querySelectorAll(".component-info.list-item");
+    if (!listItems || listItems.length === 0) return null;
 
-    .controls {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 15px;
-    }
+    const details = [];
 
-    button {
-      flex: 1;
-      padding: 10px;
-      font-size: 14px;
-      font-weight: 600;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      color: white;
-    }
+    listItems.forEach(item => {
+      item.style.background = "";
+      let type = "";
+      const typeInput = item.querySelector('.actual-duty-component-type input');
+      if (typeInput && typeInput.value) {
+        type = typeInput.value;
+      } else {
+        const typeLabel = item.querySelector('.actual-duty-component-type label.changed-label');
+        if (typeLabel) type = typeLabel.textContent;
+      }
+      
+      if (!type) return;
+      type = type.trim();
 
-    #btn-calc { background-color: #007aff; }
-    #btn-insert { background-color: #34c759; }
-    button:active { opacity: 0.8; }
+      const isObjecie = type.includes("DK Objęcie pociągu");
+      const isPrzekazanie = type.includes("DK Przekazanie pociągu");
+      const isProba = type.includes("DK Próba hamulca");
+      const isManewry = type.includes("DK Prace Manewrowe KP");
 
-    #sum {
-      background: #f2f2f7;
-      padding: 10px;
-      border-radius: 8px;
-      margin-bottom: 12px;
-      font-weight: bold;
-      text-align: center;
-      font-size: 14px;
-      border: 1px solid #e5e5ea;
-    }
+      if (!isObjecie && !isPrzekazanie && !isProba && !isManewry) return;
 
-    #list {
-      flex-grow: 1;
-      max-height: 200px;
-      overflow-y: auto;
-      margin-bottom: 15px;
-    }
+      const startInput = item.querySelector('.actual-duty-time-field-start input[type="time"]');
+      const endInput = item.querySelector('.actual-duty-time-field-end input[type="time"]');
 
-    .list-item-row {
-      border-bottom: 1px solid #eee;
-      padding: 8px 0;
-    }
-    
-    .list-item-header {
-      font-weight: 600;
-      font-size: 12px;
-      margin-bottom: 2px;
-    }
+      if (!startInput || !endInput) return;
+      const start = startInput.value;
+      const end = endInput.value;
+      if (!start || !end) return;
 
-    .list-item-details {
-      font-size: 11px;
-      color: #555;
-    }
-    
-    footer {
-        margin-top: auto;
-        padding-top: 10px;
-        border-top: 1px solid #eee;
-        font-size: 10px;
-        color: #777;
-        text-align: center;
-    }
-    
-    footer a {
-        color: #777;
-        text-decoration: none;
-    }
-  </style>
-</head>
-<body>
-  <h1>Narzędzia Czasu</h1>
-  
-  <div class="controls">
-    <button id="btn-calc">PRZELICZ</button>
-    <button id="btn-insert">WSTAW</button>
-  </div>
+      let realMinutes = timeToMinutes(end) - timeToMinutes(start);
+      if (realMinutes < 0) realMinutes += 1440; 
 
-  <div id="sum">Czas niebezpieczny: -</div>
-  <div id="list">Kliknij PRZELICZ, aby pobrać dane.</div>
+      let countedMinutes = realMinutes;
+      if (isObjecie) {
+        countedMinutes = Math.min(realMinutes, 20);
+        item.style.background = "rgba(255, 235, 59, 0.2)";
+      } else if (isPrzekazanie) {
+        countedMinutes = Math.min(realMinutes, 10);
+        item.style.background = "rgba(33, 150, 243, 0.15)";
+      } else if (isProba || isManewry) {
+        item.style.background = "rgba(76, 175, 80, 0.15)";
+      }
 
-  <footer>
-    Współautorzy: <a href="https://github.com/piotrrgw" target="_blank">Piotr M 🚂</a>, <a href="https://github.com/Thundo" target="_blank">Thundo</a> & Gemini<br>
-    Wersja aplikacji: v2.4
-  </footer>
+      details.push({ start, end, type, realMinutes, countedMinutes });
+    });
 
-  <script src="popup.js"></script>
-</body>
-</html>
+    return details;
+  }
+
+  btnCalc.addEventListener('click', (e) => {
+    e.preventDefault();
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      chrome.scripting.executeScript({
+        target: { tabId: tabs[0].id, allFrames: true },
+        func: scrapeDataFromPage
+      }, (results) => {
+        const validResult = results.find(r => r.result !== null);
+        if (validResult) {
+          foundDataFrameId = validResult.frameId;
+          const details = validResult.result;
+          const total = details.reduce((sum, d) => sum + d.countedMinutes, 0);
+          sumEl.textContent = `Suma: ${total} min`;
+          listEl.innerHTML = details.map(d => `
+            <div class="list-item-row">
+              <strong>${d.start}-${d.end}</strong>: ${d.countedMinutes}m<br><small>${d.type}</small>
+            </div>`).join('');
+        } else {
+          listEl.textContent = "Brak danych do przeliczenia.";
+        }
+      });
+    });
+  });
+
+  btnInsert.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (foundDataFrameId === null) return alert("Najpierw kliknij Przelicz.");
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      chrome.tabs.sendMessage(tabs[0].id, { type: "INSERT_DATA" }, { frameId: foundDataFrameId }, (resp) => {
+        if (resp && resp.success) btnInsert.textContent = "Wstawiono!";
+      });
+    });
+  });
+});
