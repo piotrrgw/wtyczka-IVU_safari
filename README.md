@@ -1,28 +1,29 @@
-# Czas Niebezpieczny - Rozszerzenie dla systemów IVU (Irena)
+# Czas Niebezpieczny - Rozszerzenie dla systemów IVU (Irena / Portal Intercity)
 
-Profesjonalne narzędzie wspomagające pracowników w automatycznym wyliczaniu tzw. **czasu niebezpiecznego** w systemie Irena (intercity.pl). Narzędzie dostępne jest jako pełne rozszerzenie dla przeglądarki Safari (macOS) oraz jako skrypt użytkownika (iOS/Android).
+Profesjonalne narzędzie wspomagające pracowników w automatycznym wyliczaniu tzw. **czasu niebezpiecznego** w systemach Irena oraz Portal Intercity (intercity.pl). Narzędzie jest aplikacją w pełni zgodną z EAA i WCAG, przygotowaną do wyświetlania na urządzeniach z małymi ekranami. Dostępne jest jako pełne rozszerzenie dla przeglądarki Safari (macOS) oraz jako skrypt użytkownika (iOS/Android).
 
 ## 🚀 Kluczowe Funkcje
 * **Automatyczne Obliczenia:** System rozpoznaje czynności i stosuje limity:
     * **DK Objęcie pociągu:** limit do 20 minut.
     * **DK Przekazanie pociągu:** limit do 10 minut.
     * **DK Próba hamulca:** pełny czas rzeczywisty.
-    * **DK Prace Manewrowe KP:** pełny czas rzeczywisty (Nowość!).
+    * **DK Prace Manewrowe KP:** pełny czas rzeczywisty.
 * **Integracja:** Automatyczne wstawianie wyniku (np. `N: 25m`) do komentarza w karcie pracy.
-* **Dostępność:** Pełna zgodność ze standardami WCAG i EAA. Interfejs dostosowany do urządzeń mobilnych.
+* **Obsługiwane platformy:** Narzędzie działa na adresach `irena1.intercity.pl` oraz `portal.intercity.pl`.
 
 ---
 
-## 📲 Instrukcja instalacji - Android (Prosty sposób)
+## 📲 Instrukcja instalacji - Android (Firefox + Tampermonkey)
 
-Jeśli korzystasz z urządzenia z systemem Android, wykonaj poniższe kroki, aby zainstalować narzędzie:
+Skrypt napisany z myślą o iOS doskonale działa również na smartfonach z systemem Android. Aby go uruchomić, należy zainstalować przeglądarkę obsługującą dodatki:
 
-1. **Zainstaluj przeglądarkę:** Pobierz i zainstaluj **Firefox** ze sklepu Google Play.
-2. **Dodaj rozszerzenie:** Otwórz Firefox, wejdź w menu (trzy kropki) -> **Dodatki** i zainstaluj **Tampermonkey**.
-3. **Dodaj skrypt:** * Skopiuj link do skryptu: `https://raw.githubusercontent.com/piotrrgw/wtyczka-IVU_safari/main/iOS/czas-niebezpieczny_iOS-safari.js`
-   * Otwórz panel Tampermonkey w przeglądarce, wybierz "Dodaj nowy skrypt".
-   * Wklej skopiowany kod (lub wybierz opcję instalacji z adresu URL) i zapisz.
-4. **Gotowe!** Po wejściu na stronę systemu Irena, na ekranie zobaczysz ikonę stopera ⏱️.
+1. **Zainstaluj przeglądarkę Firefox:** Pobierz i zainstaluj aplikację **Firefox** ze sklepu Google Play.
+2. **Dodaj rozszerzenie Tampermonkey:** Otwórz przeglądarkę Firefox, wejdź w menu (trzy kropki) -> **Dodatki**, a następnie wyszukaj i zainstaluj rozszerzenie **Tampermonkey**.
+3. **Zainstaluj skrypt:** * Skopiuj poniższy link do skryptu:
+     `https://raw.githubusercontent.com/piotrrgw/wtyczka-IVU_safari/main/iOS/czas-niebezpieczny_iOS-safari.js`
+   * Otwórz panel Tampermonkey w przeglądarce i wybierz opcję dodania nowego skryptu.
+   * Wklej skopiowany kod lub użyj opcji instalacji z adresu URL, a następnie zapisz.
+4. **Gotowe!** Po zalogowaniu do systemu na ekranie pojawi się pływająca ikona kalkulatora (stoper ⏱️).
 
 ---
 
@@ -41,16 +42,10 @@ Jeśli korzystasz z urządzenia z systemem Android, wykonaj poniższe kroki, aby
 ---
 
 ## 🛠️ Informacje techniczne
-* **Wersja macOS:** v1.8
-* **Wersja iOS/Android:** v2.6
-* **Brak śledzenia:** Projekt nie wykorzystuje Google Tag Manager ani innych systemów analitycznych.
+* **Wersja macOS:** v1.9
+* **Wersja iOS/Android:** v2.9
+* **Prywatność:** Projekt nie wykorzystuje Google Tag Manager (GTM) ani żadnych innych systemów analitycznych.
 
 ---
-
-## 👥 Współautorzy
-* **Piotr M** ([GitHub](https://github.com/piotrrgw))
-* **Thundo** ([GitHub](https://github.com/Thundo54))
-* **Gemini** (Model AI)
-
----
-*Wersja aplikacji: v2.6 | Piotr M 🚂 & Gemini*
+Współautorzy: Piotr M 🚂 & Gemini
+Wersja aplikacji: v2.9
