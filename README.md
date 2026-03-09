@@ -9,6 +9,7 @@ Profesjonalne narzędzie wspomagające pracowników w automatycznym wyliczaniu t
     * **DK Próba hamulca:** pełny czas rzeczywisty.
     * **DK Prace Manewrowe KP:** pełny czas rzeczywisty.
 * **Integracja:** Automatyczne wstawianie wyniku (np. `N: 25m`) do komentarza w karcie pracy.
+* **Ciemny motyw:** Dodatkowo dodaje wsparcie dla ciemnego motywu strony IVU (jako osobny niezależny skrypt)
 * **Obsługiwane platformy:** Narzędzie działa na adresach `irena1.intercity.pl` oraz `portal.intercity.pl`.
 
 ---
@@ -38,6 +39,11 @@ Skrypt napisany z myślą o iOS doskonale działa również na smartfonach z sys
 1. Zainstaluj aplikację **Userscripts** (dostępna w App Store).
 2. Włącz rozszerzenie Userscripts w ustawieniach Safari.
 3. Dodaj plik `czas-niebezpieczny_iOS-safari.js` do folderu skryptów aplikacji.
+
+### Safari (iOS/macOS) - Ciemny motyw
+1. Zainstaluj aplikację **Userscripts** (dostępna w App Store).
+2. Włącz rozszerzenie Userscripts w ustawieniach Safari.
+3. Dodaj plik `ciemny-motyw_iOS-macOS-safari.js` do folderu skryptów aplikacji.
 
 ---
 
