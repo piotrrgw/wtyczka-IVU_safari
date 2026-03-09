@@ -49,7 +49,7 @@ Skrypt napisany z myślą o iOS doskonale działa również na smartfonach z sys
 
 ## 🛠️ Informacje techniczne
 * **Wersja macOS:** v1.9
-* **Wersja iOS/Android:** v2.9
+* **Wersja iOS/Android:** v3.0
 * **Prywatność:** Projekt nie wykorzystuje Google Tag Manager (GTM) ani żadnych innych systemów analitycznych.
 
 ---
@@ -60,4 +60,4 @@ Skrypt napisany z myślą o iOS doskonale działa również na smartfonach z sys
 
 ---
 
-Wersja aplikacji: v2.9
+Wersja aplikacji: v3.0
