@@ -43,7 +43,7 @@ Skrypt napisany z myślą o iOS doskonale działa również na smartfonach z sys
 ### Safari (iOS/macOS) - Ciemny motyw
 1. Zainstaluj aplikację **Userscripts** (dostępna w App Store).
 2. Włącz rozszerzenie Userscripts w ustawieniach Safari.
-3. Dodaj plik `ciemny-motyw_iOS-macOS-safari.js` do folderu skryptów aplikacji.
+3. Dodaj plik z katalogu iOS `ciemny-motyw_iOS-macOS-safari.js` do folderu skryptów aplikacji (iOS/macOS).
 
 ---
 
