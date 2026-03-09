@@ -1,6 +1,6 @@
 /*
- * Wersja aplikacji: v1.8
- * Autorzy: Piotr M (https://github.com/piotrrgw), Thundo (https://github.com/Thundo54) & Gemini
+ * Wersja aplikacji: v1.9
+ * Autorzy: Piotr M 🚂, Thundo & Gemini
  */
 
 function timeToMinutes(t) {
