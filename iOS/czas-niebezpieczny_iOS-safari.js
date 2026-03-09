@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         Czas Niebezpieczny (Mobile v2.9)
+// @name         Czas Niebezpieczny (Mobile v3.0)
 // @namespace    http://tampermonkey.net/
-// @version      2.9
+// @version      3.0
 // @description  Czytelna nakładka iOS z auto-aktualizacją. Autorzy: Piotr M 🚂, Thundo & Gemini
 // @author       Piotr M 🚂, Thundo & Gemini
 // @match        https://irena1.intercity.pl/*
@@ -12,13 +12,28 @@
 // ==/UserScript==
 
 /*
- * Version: 2.9
+ * Version: 3.0
  * Updated: 2026-03-09
- * Changes: Dodano obsługę witryny portal.intercity.pl. Zgodność z WCAG i EAA.
+ * Changes: Zmieniono pozycję przycisku otwarcia okna cn
  */
 
 (function() {
     'use strict';
+    
+    const buttonHTML = `
+        <a id="userscripts-cn-button" class="ivupad-action-button ivupad-action-button--round">
+            <span><i class="material-icons" aria-hidden="true">timelapse</i></span>
+        </a>`;
+
+    const checkExist = setInterval(function() {
+        const targetElement = document.querySelector('#ivupad-button-main-user'); 
+
+        if (targetElement) {
+            clearInterval(checkExist);
+            targetElement.insertAdjacentHTML('afterend', buttonHTML);
+            document.getElementById('userscripts-cn-button').addEventListener('click', toggleBoxOpen);
+        }
+    }, 500);
 
     // --- 1. KONFIGURACJA I MAPOWANIE ---
     const COMPONENT_RULES = {
@@ -31,7 +46,6 @@
     // --- 2. STYLE (WCAG/EAA) ---
     const style = document.createElement('style');
     style.innerHTML = `
-        #cn-main-btn { position: fixed; bottom: 30px; right: 25px; width: 66px; height: 66px; background: #004494; border-radius: 50%; color: white; font-size: 32px; text-align: center; line-height: 66px; cursor: pointer; z-index: 10001; box-shadow: 0 4px 15px rgba(0,0,0,0.4); border: 2px solid #fff; }
         #cn-box { display: none; position: fixed; top: 10%; left: 5%; width: 90%; max-width: 380px; background: #ffffff; border-radius: 12px; border: 3px solid #004494; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 10000; padding: 20px; font-family: sans-serif; }
         #cn-box.open { display: block; }
         .cn-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 2px solid #004494; padding-bottom: 10px; }
@@ -59,19 +73,16 @@
         <div id="cn-l">Gotowy do pracy...</div>
         <div class="cn-ft">
             Współautorzy: <a href="https://github.com/piotrrgw">Piotr M 🚂</a>, <a href="https://github.com/Thundo54">Thundo</a> & Gemini<br>
-            Wersja aplikacji: v2.9
+            Wersja aplikacji: v3.0
         </div>
     `;
     document.body.appendChild(box);
 
-    const btn = document.createElement('div');
-    btn.id = 'cn-main-btn'; btn.innerHTML = '⏱️';
-    btn.setAttribute('role', 'button');
-    btn.setAttribute('aria-label', 'Otwórz kalkulator');
-    document.body.appendChild(btn);
-
     // --- 4. LOGIKA ---
-    btn.onclick = () => box.classList.toggle('open');
+    function toggleBoxOpen() {
+        box.classList.toggle('open');
+    }
+    
     box.querySelector('.cn-x').onclick = () => box.classList.remove('open');
 
     let totalMinutes = 0;
