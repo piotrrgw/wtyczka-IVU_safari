@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Czas Niebezpieczny (Safari)",
-  "version": "1.8",
+  "version": "1.9",
   "description": "Liczy czas niebezpieczny i wstawia do komentarza. Autorzy: Piotr M 🚂, Thundo & Gemini",
   "permissions": [
     "activeTab",
@@ -23,7 +23,8 @@
   "content_scripts": [
     {
       "matches": [
-        "https://irena1.intercity.pl/mbweb/main/matter/desktop/main-menu*"
+        "https://irena1.intercity.pl/mbweb/main/matter/desktop/main-menu*",
+        "https://portal.intercity.pl/*"
       ],
       "all_frames": true,
       "match_about_blank": true,
@@ -39,7 +40,8 @@
         "icon.png"
       ],
       "matches": [
-        "https://irena1.intercity.pl/*"
+        "https://irena1.intercity.pl/*",
+        "https://portal.intercity.pl/*"
       ]
     }
   ]
