@@ -1,20 +1,20 @@
 // ==UserScript==
 // @name         Czas Niebezpieczny (Mobile v3.0)
 // @namespace    http://tampermonkey.net/
-// @version      3.0
+// @version      3.1
 // @description  Czytelna nakładka iOS z auto-aktualizacją. Autorzy: Piotr M 🚂, Thundo & Gemini
 // @author       Piotr M 🚂, Thundo & Gemini
-// @match        https://irena1.intercity.pl/*
-// @match        https://portal.intercity.pl/*
+// @match        *://irena1.intercity.pl/*
+// @match        *://portal.intercity.pl/mbweb/main/matter/pad/main-menu*
 // @grant        none
 // @updateURL    https://raw.githubusercontent.com/piotrrgw/wtyczka-IVU_safari/main/iOS/czas-niebezpieczny_iOS-safari.js
 // @downloadURL  https://raw.githubusercontent.com/piotrrgw/wtyczka-IVU_safari/main/iOS/czas-niebezpieczny_iOS-safari.js
 // ==/UserScript==
 
 /*
- * Version: 3.0
+ * Version: 3.1
  * Updated: 2026-03-09
- * Changes: Zmieniono pozycję przycisku otwarcia okna cn
+ * Changes: Dodano poprawkę obsługiwanego linku.
  */
 
 (function() {
