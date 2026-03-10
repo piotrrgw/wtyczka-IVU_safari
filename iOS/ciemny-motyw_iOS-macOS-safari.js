@@ -1,11 +1,13 @@
 // ==UserScript==
 // @name         IVU.plan Dark Mode
 // @namespace    https://github.com/quoid/userscripts
-// @version      1.2
+// @version      1.3
 // @match        *://irena1.intercity.pl/*
 // @match        *://portal.intercity.pl/*
 // @require      https://cdn.jsdelivr.net/npm/darkreader@4.9.120/darkreader.min.js
 // @grant        none
+// @updateURL    https://raw.githubusercontent.com/piotrrgw/wtyczka-IVU_safari/main/iOS/ciemny-motyw_iOS-macOS-safari.js
+// @downloadURL  https://raw.githubusercontent.com/piotrrgw/wtyczka-IVU_safari/main/iOS/ciemny-motyw_iOS-macOS-safari.js
 // ==/UserScript==
 
 (function() {
