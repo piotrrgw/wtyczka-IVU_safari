@@ -1,6 +1,6 @@
-# Czas Niebezpieczny - Rozszerzenie dla systemów IVU (Irena / Portal)
+# Czas Niebezpieczny i Ciemny Motyw - Skrypty dla systemów IVU
 
-Profesjonalne narzędzie wspomagające pracowników w automatycznym wyliczaniu tzw. **czasu niebezpiecznego** w systemach Irena oraz Portal IVU. Narzędzie jest aplikacją w pełni zgodną z EAA i WCAG, przygotowaną do wyświetlania na urządzeniach z małymi ekranami. Dostępne jest jako pełne rozszerzenie dla przeglądarki Safari (macOS) oraz jako skrypt użytkownika (iOS/Android).
+Profesjonalne narzędzie wspomagające pracowników w automatycznym wyliczaniu tzw. **czasu niebezpiecznego** w systemach Irena oraz Portal IVU. Narzędzie składa się z dwóch niezależnych skryptów. Jest w pełni zgodne z EAA i WCAG oraz przygotowane do wyświetlania na urządzeniach z małymi ekranami. Działa jako uniwersalny skrypt użytkownika (Userscript) na systemach iOS, macOS, Android oraz Windows.
 
 ## 🚀 Kluczowe Funkcje
 * **Automatyczne Obliczenia:** System rozpoznaje czynności i stosuje limity:
@@ -9,55 +9,31 @@ Profesjonalne narzędzie wspomagające pracowników w automatycznym wyliczaniu t
     * **DK Próba hamulca:** pełny czas rzeczywisty.
     * **DK Prace Manewrowe KP:** pełny czas rzeczywisty.
 * **Integracja:** Automatyczne wstawianie wyniku (np. `N: 25m`) do komentarza w karcie pracy.
-* **Ciemny motyw:** Dodatkowo dodaje wsparcie dla ciemnego motywu strony IVU (jako osobny niezależny skrypt)
+* **Ciemny motyw:** Osobny, niezależny skrypt wprowadzający nowoczesny, ciemny wygląd systemów IVU, chroniący wzrok podczas pracy w nocy.
 * **Obsługiwane platformy:** Narzędzie działa na adresach `irena1.intercity.pl` oraz `portal.intercity.pl`.
 
 ---
 
-## 📲 Instrukcja instalacji - Android (Firefox + Tampermonkey)
+## 📲 Jak zainstalować?
 
-Skrypt napisany z myślą o iOS doskonale działa również na smartfonach z systemem Android. Aby go uruchomić, należy zainstalować przeglądarkę obsługującą dodatki:
+Proces instalacji jest szybki i nie wymaga wiedzy technicznej. Przygotowaliśmy szczegółowy, prosty poradnik dla każdego urządzenia (iPhone, Mac, Android, Windows).
 
-1. **Zainstaluj przeglądarkę Firefox:** Pobierz i zainstaluj aplikację **Firefox** ze sklepu Google Play.
-2. **Dodaj rozszerzenie Tampermonkey:** Otwórz przeglądarkę Firefox, wejdź w menu (trzy kropki) -> **Dodatki**, a następnie wyszukaj i zainstaluj rozszerzenie **Tampermonkey** ([LINK](https://www.tampermonkey.net)).
-3. **Zainstaluj skrypt:** * Skopiuj poniższy link do skryptu:
-     `https://raw.githubusercontent.com/piotrrgw/wtyczka-IVU_safari/main/iOS/czas-niebezpieczny_iOS-safari.js`
-   * Otwórz panel Tampermonkey w przeglądarce i wybierz opcję dodania nowego skryptu.
-   * Wklej skopiowany kod lub użyj opcji instalacji z adresu URL, a następnie zapisz.
-4. **Gotowe!** Po zalogowaniu do systemu na ekranie pojawi się pływająca ikona kalkulatora (stoper ⏱️).
-
----
-
-## 💻 Instrukcja instalacji - macOS / iOS
-
-### Safari (macOS)
-1. Pobierz folder `macOS`.
-2. Otwórz projekt w Xcode i uruchom, aby zainstalować rozszerzenie w Safari.
-3. Włącz rozszerzenie w ustawieniach przeglądarki Safari (Zakładka "Rozszerzenia").
-
-### Safari (iOS)
-1. Zainstaluj aplikację **Userscripts** (dostępna w App Store).
-2. Włącz rozszerzenie Userscripts w ustawieniach Safari.
-3. Dodaj plik `czas-niebezpieczny_iOS-safari.js` do folderu skryptów aplikacji.
-
-### Safari (iOS/macOS) - Ciemny motyw
-1. Zainstaluj aplikację **Userscripts** (dostępna w App Store).
-2. Włącz rozszerzenie Userscripts w ustawieniach Safari.
-3. Dodaj plik z katalogu iOS `ciemny-motyw_iOS-macOS-safari.js` do folderu skryptów aplikacji (iOS/macOS).
+👉 **[KLIKNIJ TUTAJ, ABY PRZEJŚĆ DO INSTRUKCJI INSTALACJI](INSTRUKCJA_INSTALACJI.md)** 👈
 
 ---
 
 ## 🛠️ Informacje techniczne
-* **Wersja macOS:** v1.9
-* **Wersja iOS/Android:** v3.0
-* **Prywatność:** Projekt nie wykorzystuje Google Tag Manager (GTM) ani żadnych innych systemów analitycznych.
+* **Wersja skryptu Czas Niebezpieczny:** v3.1
+* **Wersja skryptu Ciemny Motyw:** v1.4
+* **Prywatność:** Projekt działa całkowicie lokalnie w Twojej przeglądarce. Nie wykorzystuje Google Tag Manager (GTM) ani żadnych innych systemów śledzących czy analitycznych.
 
 ---
 
-* **Piotr M** ([GitHub](https://github.com/piotrrgw))
+## 👥 Zespół
+* **Piotr M 🚂** ([GitHub](https://github.com/piotrrgw))
 * **Thundo** ([GitHub](https://github.com/Thundo54))
 * **Gemini** (Model AI)
 
 ---
-
-Wersja aplikacji: v3.0
+Współautorzy: Piotr M 🚂 & Gemini
+Wersja aplikacji: v3.1
