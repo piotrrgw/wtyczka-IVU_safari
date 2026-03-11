@@ -1,8 +1,0 @@
-[
-  { "etykieta": "Utrata przerwy", "tekst": "Utrata moliwości realizacji przerwy na stacji zwrotnej." },
-  { "etykieta": "Opóźn. wtórne", "tekst": "Opóźnienie wtórne pociągu na trasie." },
-  { "etykieta": "Oczekiwanie", "tekst": "Oczekiwanie na drużynę z pociągu opóźnionego." },
-  { "etykieta": "Usterka taboru", "tekst": "Zgłoszono usterkę na pojeździe. Wpis w książce pokładowej." },
-  { "etykieta": "Zła pogoda", "tekst": "Zła pogoda spowodowała opóźnienie." },
-  { "etykieta": "Inne", "tekst": "Inne uwagi dotyczące służby." }
-]
