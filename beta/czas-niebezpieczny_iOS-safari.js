@@ -7,8 +7,8 @@
 // @match        *://irena1.intercity.pl/*
 // @match        *://portal.intercity.pl/mbweb/main/matter/pad/main-menu*
 // @grant        none
-// @updateURL    https://raw.githubusercontent.com/piotrrgw/wtyczka-IVU_safari/main/iOS/czas-niebezpieczny_iOS-safari.js
-// @downloadURL  https://raw.githubusercontent.com/piotrrgw/wtyczka-IVU_safari/main/iOS/czas-niebezpieczny_iOS-safari.js
+// @updateURL    https://raw.githubusercontent.com/piotrrgw/wtyczka-IVU_safari/BETA/beta/czas-niebezpieczny_iOS-safari.js
+// @downloadURL  https://raw.githubusercontent.com/piotrrgw/wtyczka-IVU_safari/BETA/beta/czas-niebezpieczny_iOS-safari.js
 // ==/UserScript==
 
 /*
@@ -52,7 +52,7 @@
     };
     
     // Adres do pliku z komentarzami na GitHubie
-    const COMMENTS_JSON_URL = 'https://raw.githubusercontent.com/piotrrgw/wtyczka-IVU_safari/main/iOS/komentarze.json';
+    const COMMENTS_JSON_URL = 'https://raw.githubusercontent.com/piotrrgw/wtyczka-IVU_safari/BETA/beta/komentarze.json';
 
     // --- 2. STYLE (WCAG/EAA) ---
     const style = document.createElement('style');
