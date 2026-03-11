@@ -1,20 +1,21 @@
 // ==UserScript==
-// @name         Czas Niebezpieczny (Mobile v3.3)
+// @name         Czas Niebezpieczny (Mobile BETA v3.4)
 // @namespace    http://tampermonkey.net/
-// @version      3.3
+// @version      3.4
 // @description  Czytelna nakładka z auto-aktualizacją i szybkimi komentarzami. Autorzy: Piotr M 🚂 & Gemini
 // @author       Piotr M 🚂 & Gemini
 // @match        *://irena1.intercity.pl/*
 // @match        *://portal.intercity.pl/mbweb/main/matter/pad/main-menu*
+// @match        file:///*
 // @grant        none
 // @updateURL    https://raw.githubusercontent.com/piotrrgw/wtyczka-IVU_safari/BETA/beta/B_czas-niebezpieczny_iOS-safari.js
 // @downloadURL  https://raw.githubusercontent.com/piotrrgw/wtyczka-IVU_safari/BETA/beta/B_czas-niebezpieczny_iOS-safari.js
 // ==/UserScript==
 
 /*
- * Wersja aplikacji: v3.3
+ * Wersja aplikacji: v3.4
  * Updated: 2026-03-11
- * Changes: Dodano kreator wprowadzania opóźnień pociągów z dynamicznym formatowaniem tekstu.
+ * Changes: Wersja BETA. Dodano rozwijaną listę przyczyn opóźnień pobieraną asynchronicznie (datalist).
  * Współautorzy: Piotr M 🚂 & Gemini
  */
 
@@ -51,8 +52,9 @@
         "11243": { name: "DK Prace Manewrowe KP", limit: null }
     };
     
-    // Adres do pliku z komentarzami na GitHubie
+    // Adresy do plików JSON w środowisku BETA
     const COMMENTS_JSON_URL = 'https://raw.githubusercontent.com/piotrrgw/wtyczka-IVU_safari/BETA/beta/komentarze.json';
+    const REASONS_JSON_URL = 'https://raw.githubusercontent.com/piotrrgw/wtyczka-IVU_safari/BETA/beta/przyczyny.json';
 
     // --- 2. STYLE (WCAG/EAA) ---
     const style = document.createElement('style');
@@ -77,7 +79,7 @@
         .cn-pill:active { background: #cbd5e1; }
         
         #cn-delay-container { display: none; flex-direction: column; gap: 8px; margin-bottom: 15px; padding: 12px; background: #f4f6f8; border-radius: 8px; border: 1px solid #cdd4db; }
-        .cn-input { width: 100%; padding: 10px; border: 1px solid #aaa; border-radius: 6px; box-sizing: border-box; font-size: 14px; font-family: sans-serif; }
+        .cn-input { width: 100%; padding: 10px; border: 1px solid #aaa; border-radius: 6px; box-sizing: border-box; font-size: 14px; font-family: sans-serif; background-color: #fff; }
         .cn-input:focus { outline: 2px solid #004494; border-color: transparent; }
         #cn-btn-add-delay { background: #004494; color: white; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 5px; }
         
@@ -105,7 +107,10 @@
         <div id="cn-delay-container" aria-live="polite">
             <input type="number" id="cn-del-nr" placeholder="Nr pociągu (wymagane)" aria-label="Numer pociągu" class="cn-input">
             <input type="text" id="cn-del-st" placeholder="Stacja (opcjonalnie)" aria-label="Nazwa stacji" class="cn-input">
-            <input type="text" id="cn-del-rs" placeholder="Przyczyna (np. Awaria SRK)" aria-label="Przyczyna opóźnienia" class="cn-input">
+            
+            <input type="text" id="cn-del-rs" list="cn-reasons-list" placeholder="Przyczyna (wybierz lub wpisz)" aria-label="Przyczyna opóźnienia" class="cn-input" autocomplete="off">
+            <datalist id="cn-reasons-list"></datalist>
+
             <input type="number" id="cn-del-tm" placeholder="Czas [min] (opcjonalnie)" aria-label="Czas opóźnienia w minutach" class="cn-input">
             <button id="cn-btn-add-delay">Wstaw do komentarza</button>
         </div>
@@ -113,7 +118,7 @@
         <div id="cn-l">Gotowy do pracy...</div>
         <div class="cn-ft">
             Współautorzy: Piotr M 🚂 & Gemini<br>
-            Wersja aplikacji: v3.3
+            Wersja aplikacji: v3.4
         </div>
     `;
     document.body.appendChild(box);
@@ -127,6 +132,7 @@
 
     let totalMinutes = 0;
     let commentsLoaded = false;
+    let reasonsLoaded = false;
 
     const parseTime = (timeStr) => {
         const [h, m] = timeStr.split(':').map(Number);
@@ -231,6 +237,23 @@
         }
     };
 
+    const loadReasons = async () => {
+        const datalist = document.getElementById('cn-reasons-list');
+        try {
+            const response = await fetch(REASONS_JSON_URL + '?t=' + new Date().getTime());
+            if (!response.ok) return;
+            
+            const data = await response.json();
+            data.forEach(reason => {
+                const opt = document.createElement('option');
+                opt.value = reason;
+                datalist.appendChild(opt);
+            });
+        } catch (error) {
+            console.error("Błąd ładowania przyczyn opóźnień:", error);
+        }
+    };
+
     // --- PRZEŁĄCZANIE ZAKŁADEK (AKORDEON) ---
     const btnComments = document.getElementById('cn-btn-comments');
     const btnDelay = document.getElementById('cn-btn-delay');
@@ -257,6 +280,11 @@
         this.setAttribute('aria-expanded', !isExpanded);
         contDelay.style.display = !isExpanded ? 'flex' : 'none';
         
+        if (!isExpanded && !reasonsLoaded) {
+            loadReasons();
+            reasonsLoaded = true;
+        }
+
         // Ukryj drugi formularz
         btnComments.setAttribute('aria-expanded', 'false');
         contComments.style.display = 'none';
