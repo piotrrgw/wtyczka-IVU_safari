@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Środowisko testowe - BETA v3.4</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f6f8; margin: 0; padding: 20px; }
+        .top-bar { display: flex; justify-content: flex-end; align-items: center; padding: 10px 20px; background: #fff; border-bottom: 2px solid #ccc; margin-bottom: 20px; }
+        #ivupad-button-main-user { padding: 10px 20px; background: #eee; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        
+        /* Style natywne systemu, pod które podpina się skrypt */
+        .ivupad-action-button { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; margin-left: 10px; background: #004494; color: white; text-decoration: none; box-shadow: 0 2px 5px rgba(0,0,0,0.2); cursor: pointer; }
+        
+        .content { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1, h2 { color: #333; }
+        .component-info.list-item { border: 1px solid #ddd; padding: 15px; margin-bottom: 10px; border-radius: 6px; background: #fafafa; }
+        .row { display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
+        .field { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 150px; }
+        .field label { font-size: 12px; color: #666; font-weight: bold; }
+        .field input, .field span { padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; background: #fff; }
+        .changed-label { display: inline-block; }
+        textarea { width: 100%; height: 120px; padding: 10px; border-radius: 6px; border: 1px solid #ccc; font-family: monospace; resize: vertical; box-sizing: border-box; font-size: 14px; }
+        footer { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; color: #777; font-size: 12px; line-height: 1.5; }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <div id="ivupad-button-main-user">👤 Jan Kowalski</div>
+        </div>
+
+    <div class="content">
+        <h1>Symulator Karty Pracy (BETA)</h1>
+        <p style="color: #666; font-size: 14px; margin-bottom: 20px;">
+            Testowe dane uwzględniają ograniczenia czasu, test detekcji na podstawie atrybutu "data-val", detekcji po klasie "changed-label", przejście przez północ oraz czynność, która powinna zostać zignorowana.
+            <strong>Poprawna suma dla poniższych danych: 20 + 10 + 45 + 60 = 135 minut.</strong>
+        </p>
+        
+        <div id="duty-list">
+            <div class="component-info list-item">
+                <div class="row">
+                    <div class="field actual-duty-component-type"><label>Typ zadania:</label><input type="text" data-val="11239" value="DK Objęcie pociągu" readonly></div>
+                    <div class="field actual-duty-time-field-start"><label>Start:</label><input type="time" value="08:00"></div>
+                    <div class="field actual-duty-time-field-end"><label>Koniec:</label><input type="time" value="08:30"></div>
+                </div>
+            </div>
+
+            <div class="component-info list-item">
+                <div class="row">
+                    <div class="field actual-duty-component-type"><label>Typ zadania:</label><span class="changed-label">DK Przekazanie pociągu</span></div>
+                    <div class="field actual-duty-time-field-start"><label>Start:</label><input type="time" value="12:00"></div>
+                    <div class="field actual-duty-time-field-end"><label>Koniec:</label><input type="time" value="12:15"></div>
+                </div>
+            </div>
+
+            <div class="component-info list-item">
+                <div class="row">
+                    <div class="field actual-duty-component-type"><label>Typ zadania:</label><input type="text" data-val="11245" value="DK Próba hamulca" readonly></div>
+                    <div class="field actual-duty-time-field-start"><label>Start:</label><input type="time" value="14:00"></div>
+                    <div class="field actual-duty-time-field-end"><label>Koniec:</label><input type="time" value="14:45"></div>
+                </div>
+            </div>
+
+            <div class="component-info list-item">
+                <div class="row">
+                    <div class="field actual-duty-component-type"><label>Typ zadania:</label><input type="text" data-val="11243" value="DK Prace Manewrowe KP" readonly></div>
+                    <div class="field actual-duty-time-field-start"><label>Start:</label><input type="time" value="23:30"></div>
+                    <div class="field actual-duty-time-field-end"><label>Koniec:</label><input type="time" value="00:30"></div>
+                </div>
+            </div>
+
+            <div class="component-info list-item">
+                <div class="row">
+                    <div class="field actual-duty-component-type"><label>Typ zadania:</label><input type="text" data-val="99999" value="Inna czynność / Przerwa" readonly></div>
+                    <div class="field actual-duty-time-field-start"><label>Start:</label><input type="time" value="10:00"></div>
+                    <div class="field actual-duty-time-field-end"><label>Koniec:</label><input type="time" value="11:00"></div>
+                </div>
+            </div>
+        </div>
+
+        <h2>Pole komentarza</h2>
+        <textarea id="comment" placeholder="Wpisz uwagi do przebiegu służby..."></textarea>
+    </div>
+
+    <footer>
+        Współautorzy: Piotr M 🚂 & Gemini<br>
+        Wersja aplikacji: v3.4 (Testowa)
+    </footer>
+
+    <script>
+        (function() {
+            'use strict';
+
+            if (window.top !== window.self) return;
+
+            const buttonHTML = `
+                <a id="userscripts-cn-button" class="ivupad-action-button ivupad-action-button--round" role="button" aria-label="Otwórz Czas Niebezpieczny" style="cursor: pointer;">
+                    <span><i class="material-icons" aria-hidden="true">timelapse</i></span>
+                </a>`;
+
+            const checkExist = setInterval(function() {
+                const targetElement = document.querySelector('#ivupad-button-main-user'); 
+                if (targetElement) {
+                    clearInterval(checkExist);
+                    if (!document.getElementById('userscripts-cn-button')) {
+                        targetElement.insertAdjacentHTML('afterend', buttonHTML);
+                        document.getElementById('userscripts-cn-button').addEventListener('click', toggleBoxOpen);
+                    }
+                }
+            }, 500);
+
+            const COMPONENT_RULES = {
+                "11239": { name: "DK Objęcie pociągu", limit: 20 },
+                "11240": { name: "DK Przekazanie pociągu", limit: 10 },
+                "11245": { name: "DK Próba hamulca", limit: null },
+                "11243": { name: "DK Prace Manewrowe KP", limit: null }
+            };
+            
+            const COMMENTS_JSON_URL = 'https://raw.githubusercontent.com/piotrrgw/wtyczka-IVU_safari/BETA/beta/komentarze.json';
+            const REASONS_JSON_URL = 'https://raw.githubusercontent.com/piotrrgw/wtyczka-IVU_safari/BETA/beta/przyczyny.json';
+
+            const style = document.createElement('style');
+            style.innerHTML = `
+                #cn-box { display: none; position: fixed; top: 10%; left: 5%; width: 90%; max-width: 380px; max-height: 85vh; overflow-y: auto; background: #ffffff; border-radius: 12px; border: 3px solid #004494; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 10000; padding: 20px; font-family: sans-serif; }
+                #cn-box.open { display: block; }
+                .cn-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 2px solid #004494; padding-bottom: 10px; }
+                .cn-t { font-weight: bold; font-size: 20px; color: #000; }
+                .cn-x { font-size: 35px; color: #b00; cursor: pointer; padding: 5px; }
+                .cn-btns { display: flex; gap: 10px; margin-bottom: 15px; }
+                .cn-b { flex: 1; padding: 15px; border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+                #cn-c { background: #004494; }
+                #cn-i { background: #1e7e34; }
+                #cn-res { background: #f0f0f5; padding: 15px; border-radius: 8px; font-weight: bold; text-align: center; font-size: 22px; border: 1px solid #ccc; margin-bottom: 10px; color: #000; }
+                .cn-btn-outline { flex: 1; padding: 10px; border: 2px solid #004494; background: #fff; color: #004494; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 14px; transition: 0.2s; text-align: center; }
+                .cn-btn-outline:hover, .cn-btn-outline[aria-expanded="true"] { background: #f0f8ff; }
+                #cn-comments-container { display: none; flex-wrap: wrap; gap: 8px; margin-bottom: 15px; padding: 10px; background: #f9f9f9; border-radius: 8px; border: 1px dashed #ccc; }
+                .cn-pill { background: #e2e8f0; color: #0f172a; padding: 8px 12px; border-radius: 20px; font-size: 13px; border: 1px solid #cbd5e1; cursor: pointer; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+                .cn-pill:active { background: #cbd5e1; }
+                #cn-delay-container { display: none; flex-direction: column; gap: 8px; margin-bottom: 15px; padding: 12px; background: #f4f6f8; border-radius: 8px; border: 1px solid #cdd4db; }
+                .cn-input { width: 100%; padding: 10px; border: 1px solid #aaa; border-radius: 6px; box-sizing: border-box; font-size: 14px; font-family: sans-serif; background-color: #fff; }
+                .cn-input:focus { outline: 2px solid #004494; border-color: transparent; }
+                #cn-btn-add-delay { background: #004494; color: white; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 5px; }
+                #cn-l { max-height: 200px; overflow-y: auto; font-size: 14px; color: #333; }
+                .cn-item { margin-bottom: 8px; padding: 10px; background: #fff; border: 1px solid #ddd; border-radius: 6px; border-left: 5px solid #004494; }
+                .cn-ft { font-size: 11px; color: #555; text-align: center; margin-top: 15px; border-top: 1px solid #eee; padding-top: 10px; line-height: 1.4; }
+            `;
+            document.head.appendChild(style);
+
+            const box = document.createElement('div');
+            box.id = 'cn-box';
+            box.innerHTML = `
+                <div class="cn-head"><span class="cn-t">Czas Niebezpieczny</span><span class="cn-x" role="button" aria-label="Zamknij">×</span></div>
+                <div class="cn-btns"><button class="cn-b" id="cn-c">Przelicz</button><button class="cn-b" id="cn-i">Wstaw Czas</button></div>
+                <div id="cn-res" aria-live="polite">Suma: -</div>
+                <div class="cn-btns" style="margin-bottom: 10px;">
+                    <button id="cn-btn-comments" class="cn-btn-outline" aria-expanded="false">💬 Komentarze</button>
+                    <button id="cn-btn-delay" class="cn-btn-outline" aria-expanded="false">🚆 Opóźnienie</button>
+                </div>
+                <div id="cn-comments-container" aria-live="polite"></div>
+                <div id="cn-delay-container" aria-live="polite">
+                    <input type="number" id="cn-del-nr" placeholder="Nr pociągu (wymagane)" aria-label="Numer pociągu" class="cn-input">
+                    <input type="text" id="cn-del-st" placeholder="Stacja (opcjonalnie)" aria-label="Nazwa stacji" class="cn-input">
+                    <input type="text" id="cn-del-rs" list="cn-reasons-list" placeholder="Przyczyna (wybierz lub wpisz)" aria-label="Przyczyna opóźnienia" class="cn-input" autocomplete="off">
+                    <datalist id="cn-reasons-list"></datalist>
+                    <input type="number" id="cn-del-tm" placeholder="Czas [min] (opcjonalnie)" aria-label="Czas opóźnienia w minutach" class="cn-input">
+                    <button id="cn-btn-add-delay">Wstaw do komentarza</button>
+                </div>
+                <div id="cn-l">Gotowy do pracy...</div>
+                <div class="cn-ft">Współautorzy: Piotr M 🚂 & Gemini<br>Wersja aplikacji: v3.4</div>
+            `;
+            document.body.appendChild(box);
+
+            function toggleBoxOpen() { box.classList.toggle('open'); }
+            box.querySelector('.cn-x').onclick = () => box.classList.remove('open');
+
+            let totalMinutes = 0, commentsLoaded = false, reasonsLoaded = false;
+
+            const parseTime = (timeStr) => {
+                const [h, m] = timeStr.split(':').map(Number);
+                return h * 60 + m;
+            };
+
+            const calculate = () => {
+                const items = document.querySelectorAll(".component-info.list-item");
+                const listContainer = document.getElementById('cn-l');
+                listContainer.innerHTML = "";
+                totalMinutes = 0;
+
+                items.forEach(item => {
+                    const input = item.querySelector('.actual-duty-component-type input');
+                    const label = item.querySelector('.actual-duty-component-type .changed-label');
+                    const id = input?.getAttribute('data-val');
+                    const currentName = label ? label.textContent.trim() : (input ? input.value : "");
+                    
+                    let rule = COMPONENT_RULES[id];
+                    if (!rule) {
+                        const foundKey = Object.keys(COMPONENT_RULES).find(key => currentName.includes(COMPONENT_RULES[key].name));
+                        if (foundKey) rule = COMPONENT_RULES[foundKey];
+                    }
+
+                    if (!rule) return;
+
+                    const start = item.querySelector('.actual-duty-time-field-start input')?.value;
+                    const end = item.querySelector('.actual-duty-time-field-end input')?.value;
+                    
+                    if (start && end) {
+                        let duration = parseTime(end) - parseTime(start);
+                        if (duration < 0) duration += 1440; 
+                        
+                        const counted = rule.limit ? Math.min(duration, rule.limit) : duration;
+                        totalMinutes += counted;
+
+                        listContainer.innerHTML += `<div class="cn-item"><b>${start} - ${end}</b>: ${counted} min<br><small>${rule.name}</small></div>`;
+                    }
+                });
+                document.getElementById('cn-res').innerText = `Suma: ${totalMinutes} min`;
+            };
+
+            const insertTime = () => {
+                const commentArea = document.querySelector("#comment");
+                if (!commentArea) return alert("Nie znaleziono pola komentarza!");
+                let currentText = commentArea.value.replace(/\n?N:\s*\d+m/g, "").trimEnd();
+                commentArea.value = currentText ? `${currentText}\nN: ${totalMinutes}m` : `N: ${totalMinutes}m`;
+                commentArea.dispatchEvent(new Event('input', { bubbles: true }));
+                alert("Suma minut wstawiona pomyślnie.");
+            };
+
+            const insertCommentText = (newText) => {
+                const commentArea = document.querySelector("#comment");
+                if (!commentArea) return alert("Nie znaleziono pola komentarza!");
+                let currentText = commentArea.value;
+                if (currentText.includes(newText)) return;
+                
+                const nMatch = currentText.match(/\n?N:\s*\d+m/);
+                if (nMatch) {
+                    currentText = currentText.replace(nMatch[0], `\n${newText}${nMatch[0]}`);
+                } else {
+                    currentText = currentText ? `${currentText}\n${newText}` : newText;
+                }
+                commentArea.value = currentText.trim();
+                commentArea.dispatchEvent(new Event('input', { bubbles: true }));
+            };
+
+            const loadComments = async () => {
+                const container = document.getElementById('cn-comments-container');
+                container.innerHTML = 'Ładowanie...';
+                try {
+                    const response = await fetch(COMMENTS_JSON_URL + '?t=' + new Date().getTime());
+                    if (!response.ok) throw new Error('Brak pliku');
+                    const data = await response.json();
+                    container.innerHTML = '';
+                    data.forEach(item => {
+                        const pill = document.createElement('button');
+                        pill.className = 'cn-pill';
+                        pill.innerText = item.etykieta;
+                        pill.onclick = () => insertCommentText(item.tekst);
+                        container.appendChild(pill);
+                    });
+                } catch (error) {
+                    container.innerHTML = '<span style="color:red; font-size: 12px;">Błąd pobierania bazy z GitHub.</span>';
+                }
+            };
+
+            const loadReasons = async () => {
+                const datalist = document.getElementById('cn-reasons-list');
+                try {
+                    const response = await fetch(REASONS_JSON_URL + '?t=' + new Date().getTime());
+                    if (!response.ok) return;
+                    const data = await response.json();
+                    data.forEach(reason => {
+                        const opt = document.createElement('option');
+                        opt.value = reason;
+                        datalist.appendChild(opt);
+                    });
+                } catch (error) {}
+            };
+
+            const btnComments = document.getElementById('cn-btn-comments');
+            const btnDelay = document.getElementById('cn-btn-delay');
+            const contComments = document.getElementById('cn-comments-container');
+            const contDelay = document.getElementById('cn-delay-container');
+
+            btnComments.onclick = function() {
+                const isExpanded = this.getAttribute('aria-expanded') === 'true';
+                this.setAttribute('aria-expanded', !isExpanded);
+                contComments.style.display = !isExpanded ? 'flex' : 'none';
+                if (!isExpanded && !commentsLoaded) { loadComments(); commentsLoaded = true; }
+                btnDelay.setAttribute('aria-expanded', 'false');
+                contDelay.style.display = 'none';
+            };
+
+            btnDelay.onclick = function() {
+                const isExpanded = this.getAttribute('aria-expanded') === 'true';
+                this.setAttribute('aria-expanded', !isExpanded);
+                contDelay.style.display = !isExpanded ? 'flex' : 'none';
+                if (!isExpanded && !reasonsLoaded) { loadReasons(); reasonsLoaded = true; }
+                btnComments.setAttribute('aria-expanded', 'false');
+                contComments.style.display = 'none';
+            };
+
+            document.getElementById('cn-btn-add-delay').onclick = function() {
+                const nr = document.getElementById('cn-del-nr').value.trim();
+                const st = document.getElementById('cn-del-st').value.trim();
+                const rs = document.getElementById('cn-del-rs').value.trim();
+                const tm = document.getElementById('cn-del-tm').value.trim();
+
+                if (!nr) { alert('Wpisz przynajmniej numer pociągu!'); return; }
+                let delayText = `*${nr}`;
+                if (st) delayText += ` < ${st}>`;
+                if (rs) delayText += ` ${rs}`;
+                if (tm) delayText += ` +${tm} min`;
+
+                insertCommentText(delayText);
+
+                document.getElementById('cn-del-nr').value = '';
+                document.getElementById('cn-del-st').value = '';
+                document.getElementById('cn-del-rs').value = '';
+                document.getElementById('cn-del-tm').value = '';
+            };
+
+            document.getElementById('cn-c').onclick = calculate;
+            document.getElementById('cn-i').onclick = insertTime;
+        })();
+    </script>
+</body>
+</html>
