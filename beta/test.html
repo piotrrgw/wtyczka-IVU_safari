@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Środowisko testowe - IVU.plan</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f6f8; margin: 0; padding: 20px; }
+        
+        /* Pasek nawigacyjny */
+        .top-bar { display: flex; justify-content: flex-end; align-items: center; padding: 10px 20px; background: #fff; border-bottom: 2px solid #ccc; margin-bottom: 20px; }
+        #ivupad-button-main-user { padding: 10px 20px; background: #eee; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        
+        /* Style dla przycisku wstrzykiwanego przez skrypt */
+        .ivupad-action-button { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; margin-left: 10px; background: #004494; color: white; text-decoration: none; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        
+        .content { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1, h2 { color: #333; }
+        
+        /* Lista zadań (Czynności) */
+        .component-info.list-item { border: 1px solid #ddd; padding: 15px; margin-bottom: 10px; border-radius: 6px; background: #fafafa; }
+        .row { display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
+        .field { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 150px; }
+        .field label { font-size: 12px; color: #666; font-weight: bold; }
+        .field input, .field span { padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; background: #fff; }
+        .changed-label { display: inline-block; }
+        
+        /* Pole komentarza */
+        textarea { width: 100%; height: 120px; padding: 10px; border-radius: 6px; border: 1px solid #ccc; font-family: monospace; resize: vertical; box-sizing: border-box; font-size: 14px; }
+        
+        /* Stopka */
+        footer { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; color: #777; font-size: 12px; line-height: 1.5; }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <div id="ivupad-button-main-user">👤 Jan Kowalski</div>
+        </div>
+
+    <div class="content">
+        <h1>Symulator Karty Pracy</h1>
+        <p style="color: #666; font-size: 14px; margin-bottom: 20px;">
+            Testowe dane uwzględniają ograniczenia czasu, test detekcji na podstawie atrybutu "data-val", detekcji po klasie "changed-label", przejście przez północ oraz czynność, która powinna zostać całkowicie zignorowana.
+            <strong>Poprawna suma dla tych danych powinna wynosić: 20 + 10 + 45 + 60 = 135 minut.</strong>
+        </p>
+        
+        <div id="duty-list">
+            
+            <div class="component-info list-item">
+                <div class="row">
+                    <div class="field actual-duty-component-type">
+                        <label>Typ zadania:</label>
+                        <input type="text" data-val="11239" value="DK Objęcie pociągu" readonly>
+                    </div>
+                    <div class="field actual-duty-time-field-start">
+                        <label>Start:</label>
+                        <input type="time" value="08:00">
+                    </div>
+                    <div class="field actual-duty-time-field-end">
+                        <label>Koniec:</label>
+                        <input type="time" value="08:30">
+                    </div>
+                </div>
+            </div>
+
+            <div class="component-info list-item">
+                <div class="row">
+                    <div class="field actual-duty-component-type">
+                        <label>Typ zadania:</label>
+                        <span class="changed-label">DK Przekazanie pociągu</span>
+                    </div>
+                    <div class="field actual-duty-time-field-start">
+                        <label>Start:</label>
+                        <input type="time" value="12:00">
+                    </div>
+                    <div class="field actual-duty-time-field-end">
+                        <label>Koniec:</label>
+                        <input type="time" value="12:15">
+                    </div>
+                </div>
+            </div>
+
+            <div class="component-info list-item">
+                <div class="row">
+                    <div class="field actual-duty-component-type">
+                        <label>Typ zadania:</label>
+                        <input type="text" data-val="11245" value="DK Próba hamulca" readonly>
+                    </div>
+                    <div class="field actual-duty-time-field-start">
+                        <label>Start:</label>
+                        <input type="time" value="14:00">
+                    </div>
+                    <div class="field actual-duty-time-field-end">
+                        <label>Koniec:</label>
+                        <input type="time" value="14:45">
+                    </div>
+                </div>
+            </div>
+
+            <div class="component-info list-item">
+                <div class="row">
+                    <div class="field actual-duty-component-type">
+                        <label>Typ zadania:</label>
+                        <input type="text" data-val="11243" value="DK Prace Manewrowe KP" readonly>
+                    </div>
+                    <div class="field actual-duty-time-field-start">
+                        <label>Start:</label>
+                        <input type="time" value="23:30">
+                    </div>
+                    <div class="field actual-duty-time-field-end">
+                        <label>Koniec:</label>
+                        <input type="time" value="00:30">
+                    </div>
+                </div>
+            </div>
+
+            <div class="component-info list-item">
+                <div class="row">
+                    <div class="field actual-duty-component-type">
+                        <label>Typ zadania:</label>
+                        <input type="text" data-val="99999" value="Inna czynność / Przerwa" readonly>
+                    </div>
+                    <div class="field actual-duty-time-field-start">
+                        <label>Start:</label>
+                        <input type="time" value="10:00">
+                    </div>
+                    <div class="field actual-duty-time-field-end">
+                        <label>Koniec:</label>
+                        <input type="time" value="11:00">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <h2>Pole komentarza</h2>
+        <textarea id="comment" placeholder="Wpisz uwagi do przebiegu służby..."></textarea>
+        
+    </div>
+
+    <footer>
+        Współautorzy: Piotr M 🚂 & Gemini<br>
+        Wersja aplikacji: v1.0
+    </footer>
+
+</body>
+</html>
