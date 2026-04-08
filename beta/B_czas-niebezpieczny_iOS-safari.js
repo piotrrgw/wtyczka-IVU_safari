@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         Czas Niebezpieczny (Mobile BETA v3.5)
+// @name         Czas Niebezpieczny (Mobile BETA v3.6)
 // @namespace    http://tampermonkey.net/
-// @version      3.5
-// @description  Czytelna nakładka z auto-aktualizacją i kreatorem opóźnień. Autorzy: Piotr M 🚂 & Gemini
+// @version      3.6
+// @description  Czytelna nakładka z auto-aktualizacją, kreatorem opóźnień i inteligentną detekcją edytowanych czasów. Autorzy: Piotr M 🚂 & Gemini
 // @author       Piotr M 🚂 & Gemini
 // @match        *://irena1.intercity.pl/*
 // @match        *://portal.intercity.pl/mbweb/main/matter/pad/main-menu*
@@ -12,9 +12,9 @@
 // ==/UserScript==
 
 /*
- * Wersja aplikacji: v3.5
- * Updated: 2026-03-11
- * Changes: Wersja BETA. Nowy, łopatologiczny interfejs kreatora opóźnień (natywny bęben <select>, podgląd na żywo).
+ * Wersja aplikacji: v3.6
+ * Updated: 2026-03-12
+ * Changes: Wersja BETA. Naprawiono przeliczanie z edytowanych czasów (priorytet changed-label przed oryginalnym input). Brak GTM.
  * Współautorzy: Piotr M 🚂 & Gemini
  */
 
@@ -144,7 +144,7 @@
         <div id="cn-l">Gotowy do pracy...</div>
         <div class="cn-ft">
             Współautorzy: Piotr M 🚂 & Gemini<br>
-            Wersja aplikacji: v3.5
+            Wersja aplikacji: v3.6
         </div>
     `;
     document.body.appendChild(box);
@@ -166,6 +166,26 @@
         return h * 60 + m;
     };
 
+    // Inteligentne pobieranie edytowanego czasu
+    const getActualTime = (container) => {
+        if (!container) return null;
+        
+        // 1. Sprawdzamy, czy system wstrzyknął zmienioną etykietę 'changed-label'
+        const changedLabel = container.querySelector('.changed-label');
+        if (changedLabel && changedLabel.textContent.trim()) {
+            const timeMatch = changedLabel.textContent.match(/\d{1,2}:\d{2}/);
+            if (timeMatch) return timeMatch[0];
+        }
+        
+        // 2. Fallback - bierzemy standardowe widoczne pole input (bierzemy ostatnie dostępne w przypadku duplikatów systemu)
+        const inputs = Array.from(container.querySelectorAll('input')).filter(i => i.type !== 'hidden');
+        if (inputs.length > 0) {
+            return inputs[inputs.length - 1].value;
+        }
+        
+        return null;
+    };
+
     const calculate = () => {
         const items = document.querySelectorAll(".component-info.list-item");
         const listContainer = document.getElementById('cn-l');
@@ -173,10 +193,10 @@
         totalMinutes = 0;
 
         items.forEach(item => {
-            const input = item.querySelector('.actual-duty-component-type input');
-            const label = item.querySelector('.actual-duty-component-type .changed-label');
-            const id = input?.getAttribute('data-val');
-            const currentName = label ? label.textContent.trim() : (input ? input.value : "");
+            const inputType = item.querySelector('.actual-duty-component-type input');
+            const labelType = item.querySelector('.actual-duty-component-type .changed-label');
+            const id = inputType?.getAttribute('data-val');
+            const currentName = labelType ? labelType.textContent.trim() : (inputType ? inputType.value : "");
             
             let rule = COMPONENT_RULES[id];
             if (!rule) {
@@ -186,8 +206,11 @@
 
             if (!rule) return;
 
-            const start = item.querySelector('.actual-duty-time-field-start input')?.value;
-            const end = item.querySelector('.actual-duty-time-field-end input')?.value;
+            const startContainer = item.querySelector('.actual-duty-time-field-start');
+            const endContainer = item.querySelector('.actual-duty-time-field-end');
+            
+            const start = getActualTime(startContainer);
+            const end = getActualTime(endContainer);
             
             if (start && end) {
                 let duration = parseTime(end) - parseTime(start);
@@ -261,7 +284,6 @@
                 opt.innerText = reason;
                 select.appendChild(opt);
             });
-            // Opcja ręcznego wpisania
             const customOpt = document.createElement('option');
             customOpt.value = "CUSTOM";
             customOpt.innerText = "➕ Inna (wpisz ręcznie)...";
@@ -287,7 +309,6 @@
         }
     };
 
-    // Pokazywanie/ukrywanie własnej przyczyny
     selectReason.addEventListener('change', (e) => {
         if (e.target.value === "CUSTOM") {
             customReasonCont.style.display = 'block';
@@ -299,7 +320,6 @@
         updatePreview();
     });
 
-    // Budowanie podglądu tekstu
     const updatePreview = () => {
         const nr = document.getElementById('cn-del-nr').value.trim();
         const st = document.getElementById('cn-del-st').value.trim();
@@ -317,7 +337,6 @@
         return txt;
     };
 
-    // Nasłuchiwanie zmian, by odświeżać podgląd
     document.getElementById('cn-del-nr').addEventListener('input', updatePreview);
     document.getElementById('cn-del-st').addEventListener('input', updatePreview);
     customReasonInput.addEventListener('input', updatePreview);
@@ -335,7 +354,6 @@
 
         insertCommentText(txt);
 
-        // Wyczyszczenie i zwinięcie
         document.getElementById('cn-del-nr').value = '';
         document.getElementById('cn-del-st').value = '';
         selectReason.value = '';
@@ -344,7 +362,7 @@
         document.getElementById('cn-del-tm').value = '';
         updatePreview();
         
-        btnDelay.click(); // zwiń panel opóźnienia
+        btnDelay.click();
     };
 
     document.getElementById('cn-c').onclick = calculate;
