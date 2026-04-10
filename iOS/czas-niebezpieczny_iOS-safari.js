@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         Czas Niebezpieczny (Mobile v3.6)
+// @name         Czas Niebezpieczny (Mobile v3.7)
 // @namespace    http://tampermonkey.net/
-// @version      3.6
-// @description  Czytelna nakładka z auto-aktualizacją, kreatorem opóźnień i inteligentną detekcją czasu. Autorzy: Piotr M 🚂 & Gemini
+// @version      3.7
+// @description  Czytelna nakładka z auto-aktualizacją, formatowaniem uwag i sprawdzaniem wersji. Autorzy: Piotr M 🚂 & Gemini
 // @author       Piotr M 🚂 & Gemini
 // @match        *://irena1.intercity.pl/*
 // @match        *://portal.intercity.pl/mbweb/main/matter/pad/main-menu*
@@ -12,9 +12,9 @@
 // ==/UserScript==
 
 /*
- * Wersja aplikacji: v3.6
- * Updated: 2026-03-12
- * Changes: Wdrożenie z wersji BETA: nowy interfejs kreatora opóźnień, poprawna detekcja modyfikowanych czasów (changed-label).
+ * Wersja aplikacji: v3.7
+ * Updated: 2026-04-10
+ * Changes: Wymuszenie N: XX na pierwszej linii w polu komentarza oraz dodanie automatycznego sprawdzania dostępności nowych wersji skryptu.
  * Współautorzy: Piotr M 🚂 & Gemini
  */
 
@@ -22,6 +22,9 @@
     'use strict';
 
     if (window.top !== window.self) return;
+
+    const CURRENT_VERSION = 3.7;
+    const SCRIPT_URL = 'https://raw.githubusercontent.com/piotrrgw/wtyczka-IVU_safari/main/iOS/czas-niebezpieczny_iOS-safari.js';
 
     // --- PRZYCISK W GÓRNYM PASKU ---
     const buttonHTML = `
@@ -49,7 +52,6 @@
         "11243": { name: "DK Prace Manewrowe KP", limit: null }
     };
     
-    // Adresy do plików JSON w środowisku produkcyjnym (gałąź main)
     const COMMENTS_JSON_URL = 'https://raw.githubusercontent.com/piotrrgw/wtyczka-IVU_safari/main/iOS/komentarze.json';
     const REASONS_JSON_URL = 'https://raw.githubusercontent.com/piotrrgw/wtyczka-IVU_safari/main/iOS/przyczyny.json';
 
@@ -67,13 +69,14 @@
         #cn-i { background: #1e7e34; }
         #cn-res { background: #f0f0f5; padding: 15px; border-radius: 8px; font-weight: bold; text-align: center; font-size: 22px; border: 1px solid #ccc; margin-bottom: 15px; color: #000; }
         
-        /* Pigułki i Szybkie Uwagi */
+        #cn-update-notice { background: #f59e0b; color: #fff; padding: 10px; text-align: center; font-size: 14px; font-weight: bold; border-radius: 6px; margin-bottom: 15px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; gap: 8px; }
+        #cn-update-notice:hover { background: #d97706; }
+
         .cn-section-title { font-size: 14px; font-weight: bold; color: #333; margin-bottom: 8px; text-transform: uppercase; border-bottom: 1px solid #eee; padding-bottom: 5px; }
         #cn-comments-container { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px; }
         .cn-pill { background: #e2e8f0; color: #0f172a; padding: 10px 15px; border-radius: 20px; font-size: 14px; border: 1px solid #cbd5e1; cursor: pointer; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.05); transition: background 0.2s; }
         .cn-pill:active { background: #cbd5e1; }
         
-        /* Przycisk kreatora i Formularz */
         .cn-btn-outline { width: 100%; padding: 12px; border: 2px solid #004494; background: #fff; color: #004494; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 15px; text-align: center; transition: 0.2s; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .cn-btn-outline:hover, .cn-btn-outline[aria-expanded="true"] { background: #f0f8ff; }
         
@@ -144,45 +147,65 @@
         <div id="cn-l">Gotowy do pracy...</div>
         <div class="cn-ft">
             Współautorzy: Piotr M 🚂 & Gemini<br>
-            Wersja aplikacji: v3.6
+            Wersja aplikacji: v3.7
         </div>
     `;
     document.body.appendChild(box);
 
     // --- 4. LOGIKA ---
-    function toggleBoxOpen() {
-        box.classList.toggle('open');
-        if (!commentsLoaded) { loadComments(); commentsLoaded = true; }
-    }
-    
-    box.querySelector('.cn-x').onclick = () => box.classList.remove('open');
-
     let totalMinutes = 0;
     let commentsLoaded = false;
     let reasonsLoaded = false;
+    let checkedForUpdate = false;
+
+    const checkForUpdates = async () => {
+        try {
+            const response = await fetch(SCRIPT_URL + '?t=' + new Date().getTime());
+            if (!response.ok) return;
+            const text = await response.text();
+            const versionMatch = text.match(/@version\s+([0-9.]+)/);
+            if (versionMatch && versionMatch[1]) {
+                const remoteVersion = parseFloat(versionMatch[1]);
+                if (remoteVersion > CURRENT_VERSION) {
+                    const head = document.querySelector('.cn-head');
+                    if (head && !document.getElementById('cn-update-notice')) {
+                        const notice = document.createElement('div');
+                        notice.id = 'cn-update-notice';
+                        notice.innerHTML = `<span class="material-icons" style="font-size: 18px;">system_update</span> Dostępna aktualizacja (v${remoteVersion})! Kliknij tutaj.`;
+                        notice.onclick = () => window.open(SCRIPT_URL, '_blank');
+                        head.insertAdjacentElement('afterend', notice);
+                    }
+                }
+            }
+        } catch (error) {
+            console.error("Błąd sprawdzania aktualizacji:", error);
+        }
+    };
+
+    function toggleBoxOpen() {
+        box.classList.toggle('open');
+        if (!commentsLoaded) { loadComments(); commentsLoaded = true; }
+        if (!checkedForUpdate) { checkForUpdates(); checkedForUpdate = true; }
+    }
+    
+    box.querySelector('.cn-x').onclick = () => box.classList.remove('open');
 
     const parseTime = (timeStr) => {
         const [h, m] = timeStr.split(':').map(Number);
         return h * 60 + m;
     };
 
-    // Inteligentne pobieranie edytowanego czasu
     const getActualTime = (container) => {
         if (!container) return null;
-        
-        // 1. Sprawdzamy, czy system wstrzyknął zmienioną etykietę 'changed-label'
         const changedLabel = container.querySelector('.changed-label');
         if (changedLabel && changedLabel.textContent.trim()) {
             const timeMatch = changedLabel.textContent.match(/\d{1,2}:\d{2}/);
             if (timeMatch) return timeMatch[0];
         }
-        
-        // 2. Fallback - bierzemy standardowe widoczne pole input
         const inputs = Array.from(container.querySelectorAll('input')).filter(i => i.type !== 'hidden');
         if (inputs.length > 0) {
             return inputs[inputs.length - 1].value;
         }
-        
         return null;
     };
 
@@ -224,11 +247,14 @@
         document.getElementById('cn-res').innerText = `Suma: ${totalMinutes} min`;
     };
 
+    // INTELIGENTNE FORMATOWANIE: Wymusza "N: " na początku.
     const insertTime = () => {
         const commentArea = document.querySelector("#comment");
         if (!commentArea) return alert("Nie znaleziono pola komentarza!");
-        let currentText = commentArea.value.replace(/\n?N:\s*\d+m/g, "").trimEnd();
-        commentArea.value = currentText ? `${currentText}\nN: ${totalMinutes}m` : `N: ${totalMinutes}m`;
+        
+        let textWithoutN = commentArea.value.replace(/N:\s*\d+m/g, "").trim();
+        commentArea.value = textWithoutN ? `N: ${totalMinutes}m\n${textWithoutN}` : `N: ${totalMinutes}m`;
+        
         commentArea.dispatchEvent(new Event('input', { bubbles: true }));
         alert("Suma minut wstawiona pomyślnie.");
     };
@@ -241,14 +267,12 @@
         let currentText = commentArea.value;
         if (currentText.includes(newText)) return;
         
-        const nMatch = currentText.match(/\n?N:\s*\d+m/);
-        if (nMatch) {
-            currentText = currentText.replace(nMatch[0], `\n${newText}${nMatch[0]}`);
-        } else {
-            currentText = currentText ? `${currentText}\n${newText}` : newText;
-        }
+        const nMatch = currentText.match(/N:\s*\d+m/);
+        let textWithoutN = currentText.replace(/N:\s*\d+m/g, "").trim();
         
-        commentArea.value = currentText.trim();
+        textWithoutN = textWithoutN ? `${textWithoutN}\n${newText}` : newText;
+        commentArea.value = nMatch ? `${nMatch[0]}\n${textWithoutN}` : textWithoutN;
+        
         commentArea.dispatchEvent(new Event('input', { bubbles: true }));
     };
 
@@ -302,7 +326,6 @@
         const isExpanded = this.getAttribute('aria-expanded') === 'true';
         this.setAttribute('aria-expanded', !isExpanded);
         contDelay.style.display = !isExpanded ? 'flex' : 'none';
-        
         if (!isExpanded && !reasonsLoaded) {
             loadReasons();
             reasonsLoaded = true;
