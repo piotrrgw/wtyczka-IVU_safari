@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         Czas Niebezpieczny (Mobile v3.8)
+// @name         Czas Niebezpieczny (Mobile v3.9)
 // @namespace    http://tampermonkey.net/
-// @version      3.8
-// @description  Czytelna nakładka z auto-aktualizacją i blokadą pobierania pliku logout. Autorzy: Piotr M 🚂 & Gemini
+// @version      3.9
+// @description  Czytelna nakładka z auto-aktualizacją i blokadą wylogowania. Uproszczony interfejs. Autorzy: Piotr M 🚂 & Gemini
 // @author       Piotr M 🚂 & Gemini
 // @match        *://irena1.intercity.pl/*
 // @match        *://portal.intercity.pl/mbweb/main/matter/pad/main-menu*
@@ -12,9 +12,9 @@
 // ==/UserScript==
 
 /*
- * Wersja aplikacji: v3.8
+ * Wersja aplikacji: v3.9
  * Updated: 2026-04-15
- * Changes: Dodano MutationObserver blokujący samoistne pobieranie pustego pliku 'logout' przez system.
+ * Changes: Usunięcie sekcji szybkich uwag w celu poprawy czytelności na małych ekranach. Pozostawiono kreator opóźnień.
  * Współautorzy: Piotr M 🚂 & Gemini
  */
 
@@ -23,19 +23,17 @@
 
     if (window.top !== window.self) return;
 
-    const CURRENT_VERSION = 3.8;
+    const CURRENT_VERSION = 3.9;
     const SCRIPT_URL = 'https://raw.githubusercontent.com/piotrrgw/wtyczka-IVU_safari/main/iOS/czas-niebezpieczny_iOS-safari.js';
 
     // --- BLOKADA POBIERANIA PLIKU 'logout' ---
     const blockLogoutDownload = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
             mutation.addedNodes.forEach((node) => {
-                // Blokada ukrytych ramek
                 if (node.tagName === 'IFRAME' && node.src && node.src.toLowerCase().includes('logout')) {
                     node.remove();
                     console.log('Czas Niebezpieczny: Zablokowano pobieranie pliku logout (iframe).');
                 }
-                // Blokada dynamicznie generowanych linków pobierania
                 if (node.tagName === 'A' && node.href && node.href.toLowerCase().includes('logout') && node.hasAttribute('download')) {
                     node.remove();
                     console.log('Czas Niebezpieczny: Zablokowano pobieranie pliku logout (a download).');
@@ -44,7 +42,6 @@
         });
     });
     
-    // Uruchomienie strażnika natychmiast na całym dokumencie
     blockLogoutDownload.observe(document.documentElement, { childList: true, subtree: true });
 
     // --- PRZYCISK W GÓRNYM PASKU ---
@@ -73,7 +70,6 @@
         "11243": { name: "DK Prace Manewrowe KP", limit: null }
     };
     
-    const COMMENTS_JSON_URL = 'https://raw.githubusercontent.com/piotrrgw/wtyczka-IVU_safari/main/iOS/komentarze.json';
     const REASONS_JSON_URL = 'https://raw.githubusercontent.com/piotrrgw/wtyczka-IVU_safari/main/iOS/przyczyny.json';
 
     // --- 2. STYLE (WCAG/EAA) ---
@@ -93,11 +89,6 @@
         #cn-update-notice { background: #f59e0b; color: #fff; padding: 10px; text-align: center; font-size: 14px; font-weight: bold; border-radius: 6px; margin-bottom: 15px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; gap: 8px; }
         #cn-update-notice:hover { background: #d97706; }
 
-        .cn-section-title { font-size: 14px; font-weight: bold; color: #333; margin-bottom: 8px; text-transform: uppercase; border-bottom: 1px solid #eee; padding-bottom: 5px; }
-        #cn-comments-container { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px; }
-        .cn-pill { background: #e2e8f0; color: #0f172a; padding: 10px 15px; border-radius: 20px; font-size: 14px; border: 1px solid #cbd5e1; cursor: pointer; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.05); transition: background 0.2s; }
-        .cn-pill:active { background: #cbd5e1; }
-        
         .cn-btn-outline { width: 100%; padding: 12px; border: 2px solid #004494; background: #fff; color: #004494; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 15px; text-align: center; transition: 0.2s; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .cn-btn-outline:hover, .cn-btn-outline[aria-expanded="true"] { background: #f0f8ff; }
         
@@ -122,11 +113,6 @@
         <div class="cn-head"><span class="cn-t">Czas Niebezpieczny</span><span class="cn-x" role="button" aria-label="Zamknij">×</span></div>
         <div class="cn-btns"><button class="cn-b" id="cn-c">Przelicz</button><button class="cn-b" id="cn-i">Wstaw Czas</button></div>
         <div id="cn-res" aria-live="polite">Suma: -</div>
-        
-        <div class="cn-section-title">Szybkie uwagi</div>
-        <div id="cn-comments-container" aria-live="polite">
-            <span style="font-size:12px; color:#666;">Ładowanie z bazy...</span>
-        </div>
         
         <button id="cn-btn-delay" class="cn-btn-outline" aria-expanded="false">
             <span style="font-size:18px;">🚆</span> Zgłoś opóźnienie pociągu
@@ -168,14 +154,13 @@
         <div id="cn-l">Gotowy do pracy...</div>
         <div class="cn-ft">
             Współautorzy: Piotr M 🚂 & Gemini<br>
-            Wersja aplikacji: v3.8
+            Wersja aplikacji: v3.9
         </div>
     `;
     document.body.appendChild(box);
 
     // --- 4. LOGIKA ---
     let totalMinutes = 0;
-    let commentsLoaded = false;
     let reasonsLoaded = false;
     let checkedForUpdate = false;
 
@@ -205,7 +190,6 @@
 
     function toggleBoxOpen() {
         box.classList.toggle('open');
-        if (!commentsLoaded) { loadComments(); commentsLoaded = true; }
         if (!checkedForUpdate) { checkForUpdates(); checkedForUpdate = true; }
     }
     
@@ -294,26 +278,6 @@
         commentArea.value = nMatch ? `${nMatch[0]}\n${textWithoutN}` : textWithoutN;
         
         commentArea.dispatchEvent(new Event('input', { bubbles: true }));
-    };
-
-    // --- POBIERANIE JSON ---
-    const loadComments = async () => {
-        const container = document.getElementById('cn-comments-container');
-        try {
-            const response = await fetch(COMMENTS_JSON_URL + '?t=' + new Date().getTime());
-            if (!response.ok) throw new Error('Brak pliku');
-            const data = await response.json();
-            container.innerHTML = '';
-            data.forEach(item => {
-                const pill = document.createElement('button');
-                pill.className = 'cn-pill';
-                pill.innerText = item.etykieta;
-                pill.onclick = () => insertCommentText(item.tekst);
-                container.appendChild(pill);
-            });
-        } catch (error) {
-            container.innerHTML = '<span style="color:red; font-size: 12px;">Błąd pobierania bazy uwag z repozytorium.</span>';
-        }
     };
 
     const loadReasons = async () => {
