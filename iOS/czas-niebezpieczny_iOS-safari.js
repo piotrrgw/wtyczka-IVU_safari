@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         Czas Niebezpieczny (Mobile v3.7)
+// @name         Czas Niebezpieczny (Mobile v3.8)
 // @namespace    http://tampermonkey.net/
-// @version      3.7
-// @description  Czytelna nakładka z auto-aktualizacją, formatowaniem uwag i sprawdzaniem wersji. Autorzy: Piotr M 🚂 & Gemini
+// @version      3.8
+// @description  Czytelna nakładka z auto-aktualizacją i blokadą pobierania pliku logout. Autorzy: Piotr M 🚂 & Gemini
 // @author       Piotr M 🚂 & Gemini
 // @match        *://irena1.intercity.pl/*
 // @match        *://portal.intercity.pl/mbweb/main/matter/pad/main-menu*
@@ -12,9 +12,9 @@
 // ==/UserScript==
 
 /*
- * Wersja aplikacji: v3.7
- * Updated: 2026-04-10
- * Changes: Wymuszenie N: XX na pierwszej linii w polu komentarza oraz dodanie automatycznego sprawdzania dostępności nowych wersji skryptu.
+ * Wersja aplikacji: v3.8
+ * Updated: 2026-04-15
+ * Changes: Dodano MutationObserver blokujący samoistne pobieranie pustego pliku 'logout' przez system.
  * Współautorzy: Piotr M 🚂 & Gemini
  */
 
@@ -23,8 +23,29 @@
 
     if (window.top !== window.self) return;
 
-    const CURRENT_VERSION = 3.7;
+    const CURRENT_VERSION = 3.8;
     const SCRIPT_URL = 'https://raw.githubusercontent.com/piotrrgw/wtyczka-IVU_safari/main/iOS/czas-niebezpieczny_iOS-safari.js';
+
+    // --- BLOKADA POBIERANIA PLIKU 'logout' ---
+    const blockLogoutDownload = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            mutation.addedNodes.forEach((node) => {
+                // Blokada ukrytych ramek
+                if (node.tagName === 'IFRAME' && node.src && node.src.toLowerCase().includes('logout')) {
+                    node.remove();
+                    console.log('Czas Niebezpieczny: Zablokowano pobieranie pliku logout (iframe).');
+                }
+                // Blokada dynamicznie generowanych linków pobierania
+                if (node.tagName === 'A' && node.href && node.href.toLowerCase().includes('logout') && node.hasAttribute('download')) {
+                    node.remove();
+                    console.log('Czas Niebezpieczny: Zablokowano pobieranie pliku logout (a download).');
+                }
+            });
+        });
+    });
+    
+    // Uruchomienie strażnika natychmiast na całym dokumencie
+    blockLogoutDownload.observe(document.documentElement, { childList: true, subtree: true });
 
     // --- PRZYCISK W GÓRNYM PASKU ---
     const buttonHTML = `
@@ -147,7 +168,7 @@
         <div id="cn-l">Gotowy do pracy...</div>
         <div class="cn-ft">
             Współautorzy: Piotr M 🚂 & Gemini<br>
-            Wersja aplikacji: v3.7
+            Wersja aplikacji: v3.8
         </div>
     `;
     document.body.appendChild(box);
@@ -247,7 +268,6 @@
         document.getElementById('cn-res').innerText = `Suma: ${totalMinutes} min`;
     };
 
-    // INTELIGENTNE FORMATOWANIE: Wymusza "N: " na początku.
     const insertTime = () => {
         const commentArea = document.querySelector("#comment");
         if (!commentArea) return alert("Nie znaleziono pola komentarza!");
