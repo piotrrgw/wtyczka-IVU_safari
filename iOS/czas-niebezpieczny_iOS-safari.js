@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         Czas Niebezpieczny (Mobile v3.12)
+// @name         Czas Niebezpieczny (Mobile v3.14)
 // @namespace    http://tampermonkey.net/
-// @version      3.12
-// @description  Czytelna nakładka z auto-aktualizacją i poprawną detekcją input[type="time"]. Autorzy: Piotr M 🚂 & Gemini
+// @version      3.14
+// @description  Czytelna nakładka z auto-aktualizacją. Poprawka widoczności tekstu w formularzach (wymuszony czarny kolor). Autorzy: Piotr M 🚂 & Gemini
 // @author       Piotr M 🚂 & Gemini
 // @match        *://irena1.intercity.pl/*
 // @match        *://portal.intercity.pl/mbweb/main/matter/pad/main-menu*
@@ -12,9 +12,9 @@
 // ==/UserScript==
 
 /*
- * Wersja aplikacji: v3.12
- * Updated: 2026-04-23
- * Changes: Precyzyjne pobieranie edytowanego czasu prosto z input[type="time"]. Omijanie ukrytych starych inputów w DOM.
+ * Wersja aplikacji: v3.14
+ * Updated: 2026-04-24
+ * Changes: Wymuszenie czarnego koloru tekstu w polach input/select formularza, aby uniknąć białego tekstu na białym tle (konflikt z dark mode/CSS portalu).
  * Współautorzy: Piotr M 🚂 & Gemini
  */
 
@@ -23,7 +23,7 @@
 
     if (window.top !== window.self) return;
 
-    const CURRENT_VERSION = 3.12;
+    const CURRENT_VERSION = 3.14;
     const SCRIPT_URL = 'https://raw.githubusercontent.com/piotrrgw/wtyczka-IVU_safari/main/iOS/czas-niebezpieczny_iOS-safari.js';
 
     // --- BLOKADA POBIERANIA PLIKU 'logout' ---
@@ -80,25 +80,36 @@
         .cn-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 2px solid #004494; padding-bottom: 10px; }
         .cn-t { font-weight: bold; font-size: 20px; color: #000; }
         .cn-x { font-size: 35px; color: #b00; cursor: pointer; padding: 5px; line-height: 1; }
-        .cn-btns { display: flex; gap: 10px; margin-bottom: 15px; }
-        .cn-b { flex: 1; padding: 15px; border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 14px; }
+        
+        /* Główne przyciski */
+        .cn-b { width: 100%; padding: 15px; border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 14px; margin-bottom: 15px; }
         #cn-c { background: #004494; }
-        #cn-i { background: #1e7e34; }
-        #cn-res { background: #f0f0f5; padding: 15px; border-radius: 8px; font-weight: bold; text-align: center; font-size: 22px; border: 1px solid #ccc; margin-bottom: 15px; color: #000; }
+        #cn-btn-insert-all { background: #1e7e34; margin-bottom: 5px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        #cn-btn-insert-all:active { transform: scale(0.98); }
+        
+        /* Boksy statystyk */
+        .cn-stat-box { padding: 10px; border-radius: 8px; font-weight: bold; text-align: center; border: 1px solid; }
+        #cn-res-n { background: #f0f0f5; border-color: #ccc; color: #000; font-size: 20px; margin-bottom: 10px; }
+        .cn-stat-row { display: flex; gap: 10px; margin-bottom: 15px; }
+        #cn-res-work { flex: 1; background: #e6f2ff; border-color: #b3d9ff; color: #004494; font-size: 14px; }
+        #cn-res-break { flex: 1; background: #e6ffe6; border-color: #b3ffb3; color: #1e7e34; font-size: 14px; }
         
         #cn-update-notice { background: #f59e0b; color: #fff; padding: 10px; text-align: center; font-size: 14px; font-weight: bold; border-radius: 6px; margin-bottom: 15px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; gap: 8px; }
         #cn-update-notice:hover { background: #d97706; }
 
+        /* Formularz opóźnień */
         .cn-btn-outline { width: 100%; padding: 12px; border: 2px solid #004494; background: #fff; color: #004494; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 15px; text-align: center; transition: 0.2s; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .cn-btn-outline:hover, .cn-btn-outline[aria-expanded="true"] { background: #f0f8ff; }
         
         #cn-delay-container { display: none; flex-direction: column; gap: 12px; margin-bottom: 15px; padding: 15px; background: #f8fafc; border-radius: 8px; border: 1px solid #cbd5e1; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
         .cn-label { display: block; font-size: 12px; color: #475569; font-weight: bold; margin-bottom: 4px; }
-        .cn-input, .cn-select { width: 100%; padding: 12px; border: 1px solid #94a3b8; border-radius: 6px; box-sizing: border-box; font-size: 16px; font-family: sans-serif; background-color: #fff; }
+        
+        /* Wymuszony ciemny kolor tekstu dla pól input i select, aby uniknąć problemu białego tekstu na białym tle */
+        .cn-input, .cn-select { width: 100%; padding: 12px; border: 1px solid #94a3b8; border-radius: 6px; box-sizing: border-box; font-size: 16px; font-family: sans-serif; background-color: #fff !important; color: #000 !important; }
+        
         .cn-select { appearance: auto; -webkit-appearance: auto; height: 45px; }
         .cn-input:focus, .cn-select:focus { outline: 2px solid #004494; border-color: transparent; }
         #cn-del-preview { background: #eef2f6; border: 1px dashed #94a3b8; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 14px; color: #334155; min-height: 20px; word-break: break-word; }
-        #cn-btn-add-delay { background: #0f766e; color: white; padding: 14px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 15px; margin-top: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         
         #cn-l { max-height: 150px; overflow-y: auto; font-size: 14px; color: #333; margin-top: 10px; }
         .cn-item { margin-bottom: 8px; padding: 10px; background: #fff; border: 1px solid #ddd; border-radius: 6px; border-left: 5px solid #004494; }
@@ -111,8 +122,14 @@
     box.id = 'cn-box';
     box.innerHTML = `
         <div class="cn-head"><span class="cn-t">Czas Niebezpieczny</span><span class="cn-x" role="button" aria-label="Zamknij">×</span></div>
-        <div class="cn-btns"><button class="cn-b" id="cn-c">Przelicz</button><button class="cn-b" id="cn-i">Wstaw Czas</button></div>
-        <div id="cn-res" aria-live="polite">Suma: -</div>
+        
+        <button class="cn-b" id="cn-c">Przelicz Wykaz</button>
+        
+        <div id="cn-res-n" class="cn-stat-box" aria-live="polite">Czas Niebezpieczny: -</div>
+        <div class="cn-stat-row" aria-live="polite">
+            <div id="cn-res-work" class="cn-stat-box" title="Czas od rozpoczęcia pierwszej do zakończenia ostatniej czynności">Czas pracy: -</div>
+            <div id="cn-res-break" class="cn-stat-box" title="Łączny czas wszystkich przerw">Przerwa: -</div>
+        </div>
         
         <button id="cn-btn-delay" class="cn-btn-outline" aria-expanded="false">
             <span style="font-size:18px;">🚆</span> Zgłoś opóźnienie pociągu
@@ -147,20 +164,22 @@
             </div>
             
             <div id="cn-del-preview">Podgląd: (wypełnij formularz)</div>
-            
-            <button id="cn-btn-add-delay">Wstaw do komentarza</button>
         </div>
+
+        <button id="cn-btn-insert-all" class="cn-b">WSTAW KOMENTARZ</button>
 
         <div id="cn-l">Gotowy do pracy...</div>
         <div class="cn-ft">
             Współautorzy: Piotr M 🚂 & Gemini<br>
-            Wersja aplikacji: v3.12
+            Wersja aplikacji: v3.14
         </div>
     `;
     document.body.appendChild(box);
 
     // --- 4. LOGIKA ---
     let totalMinutes = 0;
+    let totalBreakMinutes = 0;
+    let totalWorkMinutes = 0;
     let reasonsLoaded = false;
     let checkedForUpdate = false;
 
@@ -200,24 +219,19 @@
         return h * 60 + m;
     };
 
-    // --- NOWA, BEZBŁĘDNA DETEKCJA CZASU OPARTA NA DANYCH OD UŻYTKOWNIKA ---
+    // --- BEZBŁĘDNA DETEKCJA CZASU OPARTA NA DANYCH OD UŻYTKOWNIKA ---
     const getActualTime = (container) => {
         if (!container) return null;
         
-        // 1. Omijamy ukryte inputy i celujemy prosto w natywny input time (lub tekstowy z klasą IVU)
         const timeInput = container.querySelector('input[type="time"].actual-duty-time-field-input, input[type="time"]');
-        if (timeInput && timeInput.value) {
-            return timeInput.value;
-        }
+        if (timeInput && timeInput.value) return timeInput.value;
 
-        // 2. Fallback na widoczny input tekstowy (gdyby użyto przeglądarki bez wsparcia type="time")
         const textInput = container.querySelector('input.actual-duty-time-field-input:not([type="hidden"])');
         if (textInput && textInput.value) {
             const match = textInput.value.match(/\d{1,2}:\d{2}/);
             if (match) return match[0];
         }
         
-        // 3. Fallback na etykietę changed-label
         const changedLabel = container.querySelector('.changed-label');
         if (changedLabel && changedLabel.textContent) {
             const match = changedLabel.textContent.match(/\d{1,2}:\d{2}/);
@@ -231,7 +245,13 @@
         const items = document.querySelectorAll(".component-info.list-item");
         const listContainer = document.getElementById('cn-l');
         listContainer.innerHTML = "";
+        
         totalMinutes = 0;
+        totalBreakMinutes = 0;
+        totalWorkMinutes = 0;
+
+        let firstStartTime = null;
+        let currentShiftEnd = null;
 
         items.forEach(item => {
             const inputType = item.querySelector('.actual-duty-component-type input');
@@ -239,58 +259,71 @@
             const id = inputType?.getAttribute('data-val');
             const currentName = labelType ? labelType.textContent.trim() : (inputType ? inputType.value : "");
             
-            let rule = COMPONENT_RULES[id];
-            if (!rule) {
-                const foundKey = Object.keys(COMPONENT_RULES).find(key => currentName.includes(COMPONENT_RULES[key].name));
-                if (foundKey) rule = COMPONENT_RULES[foundKey];
-            }
-
-            if (!rule) return;
-
             const startContainer = item.querySelector('.actual-duty-time-field-start');
             const endContainer = item.querySelector('.actual-duty-time-field-end');
             
-            const start = getActualTime(startContainer);
-            const end = getActualTime(endContainer);
+            const startStr = getActualTime(startContainer);
+            const endStr = getActualTime(endContainer);
             
-            if (start && end) {
-                let duration = parseTime(end) - parseTime(start);
-                if (duration < 0) duration += 1440; 
-                const counted = rule.limit ? Math.min(duration, rule.limit) : duration;
-                totalMinutes += counted;
-                listContainer.innerHTML += `<div class="cn-item"><b>${start} - ${end}</b>: ${counted} min<br><small>${rule.name}</small></div>`;
+            if (startStr && endStr) {
+                const s = parseTime(startStr);
+                let e = parseTime(endStr);
+                let duration = e - s;
+                if (duration < 0) {
+                    duration += 1440; // Przejście przez północ
+                    e += 1440;
+                }
+
+                // Kalkulacja łącznego czasu trwania zmiany
+                if (firstStartTime === null) {
+                    firstStartTime = s;
+                    currentShiftEnd = s + duration;
+                } else {
+                    let adjustedStart = s;
+                    while (adjustedStart < currentShiftEnd - 1440) {
+                        adjustedStart += 1440;
+                    }
+                    if (adjustedStart < firstStartTime) adjustedStart += 1440;
+                    
+                    let adjustedEnd = adjustedStart + duration;
+                    if (adjustedEnd > currentShiftEnd) {
+                        currentShiftEnd = adjustedEnd;
+                    }
+                }
+
+                // Kalkulacja przerw (sprawdzanie słowa kluczowego)
+                if (currentName.toLowerCase().includes('przerwa')) {
+                    totalBreakMinutes += duration;
+                }
+
+                // Kalkulacja Czasu Niebezpiecznego
+                let rule = COMPONENT_RULES[id];
+                if (!rule) {
+                    const foundKey = Object.keys(COMPONENT_RULES).find(key => currentName.includes(COMPONENT_RULES[key].name));
+                    if (foundKey) rule = COMPONENT_RULES[foundKey];
+                }
+
+                if (rule) {
+                    const counted = rule.limit ? Math.min(duration, rule.limit) : duration;
+                    totalMinutes += counted;
+                    listContainer.innerHTML += `<div class="cn-item"><b>${startStr} - ${endStr}</b>: ${counted} min<br><small>${rule.name}</small></div>`;
+                }
             }
         });
 
-        document.getElementById('cn-res').innerText = `Suma: ${totalMinutes} min`;
-    };
+        if (firstStartTime !== null && currentShiftEnd !== null) {
+            totalWorkMinutes = currentShiftEnd - firstStartTime;
+        }
 
-    const insertTime = () => {
-        const commentArea = document.querySelector("#comment");
-        if (!commentArea) return alert("Nie znaleziono pola komentarza!");
-        
-        let textWithoutN = commentArea.value.replace(/N:\s*\d+m/g, "").trim();
-        commentArea.value = textWithoutN ? `N: ${totalMinutes}m\n${textWithoutN}` : `N: ${totalMinutes}m`;
-        
-        commentArea.dispatchEvent(new Event('input', { bubbles: true }));
-        alert("Suma minut wstawiona pomyślnie.");
-    };
+        const formatHM = (mins) => {
+            const h = Math.floor(mins / 60);
+            const m = mins % 60;
+            return `${h}:${m.toString().padStart(2, '0')}`;
+        };
 
-    const insertCommentText = (newText) => {
-        if(!newText) return;
-        const commentArea = document.querySelector("#comment");
-        if (!commentArea) return alert("Nie znaleziono pola komentarza!");
-        
-        let currentText = commentArea.value;
-        if (currentText.includes(newText)) return;
-        
-        const nMatch = currentText.match(/N:\s*\d+m/);
-        let textWithoutN = currentText.replace(/N:\s*\d+m/g, "").trim();
-        
-        textWithoutN = textWithoutN ? `${textWithoutN}\n${newText}` : newText;
-        commentArea.value = nMatch ? `${nMatch[0]}\n${textWithoutN}` : textWithoutN;
-        
-        commentArea.dispatchEvent(new Event('input', { bubbles: true }));
+        document.getElementById('cn-res-n').innerText = `Czas Niebezp.: ${totalMinutes} min`;
+        document.getElementById('cn-res-work').innerText = `Czas pracy: ${formatHM(totalWorkMinutes)}`;
+        document.getElementById('cn-res-break').innerText = `Przerwa: ${totalBreakMinutes} min`;
     };
 
     const loadReasons = async () => {
@@ -362,29 +395,60 @@
     customReasonInput.addEventListener('input', updatePreview);
     document.getElementById('cn-del-tm').addEventListener('input', updatePreview);
 
-    document.getElementById('cn-btn-add-delay').onclick = function() {
-        const txt = updatePreview();
+    // --- JEDEN WSPÓLNY PRZYCISK: WSTAW KOMENTARZ ---
+    document.getElementById('cn-btn-insert-all').onclick = function() {
+        // Wymuszamy najpierw przeliczenie czasów, by mieć pewność, że N: jest aktualne
+        calculate();
+
+        const delayTxt = updatePreview();
+        const isDelayFormOpen = document.getElementById('cn-delay-container').style.display === 'flex';
         const nr = document.getElementById('cn-del-nr').value.trim();
 
-        if (!nr) {
-            alert('Wpisz przynajmniej numer pociągu (wymagane).');
+        // Jeżeli użytkownik otworzył formularz i coś w nim wpisał, ale zapomniał numeru pociągu:
+        if (isDelayFormOpen && !nr && (document.getElementById('cn-del-st').value.trim() || selectReason.value || document.getElementById('cn-del-tm').value.trim())) {
+            alert('Wypełniasz formularz opóźnienia – wpisz przynajmniej numer pociągu!');
             document.getElementById('cn-del-nr').focus();
             return;
         }
 
-        insertCommentText(txt);
+        const commentArea = document.querySelector("#comment");
+        if (!commentArea) return alert("Nie znaleziono pola komentarza w systemie!");
 
-        document.getElementById('cn-del-nr').value = '';
-        document.getElementById('cn-del-st').value = '';
-        selectReason.value = '';
-        customReasonInput.value = '';
-        customReasonCont.style.display = 'none';
-        document.getElementById('cn-del-tm').value = '';
-        updatePreview();
-        
-        btnDelay.click();
+        let currentText = commentArea.value;
+
+        // Wycinamy stare wpisy N: aby uniknąć duplikatów
+        let textWithoutN = currentText.replace(/N:\s*\d+m/g, "").trim();
+
+        // Dodajemy wygenerowane opóźnienie (jeśli zostało wpisane i nie ma go już w komentarzu)
+        if (delayTxt && !textWithoutN.includes(delayTxt)) {
+            textWithoutN = textWithoutN ? `${textWithoutN}\n${delayTxt}` : delayTxt;
+        }
+
+        // Doklejamy aktualne N: XXm zawsze na samym początku pierwszej linii
+        const finalN = `N: ${totalMinutes}m`;
+        commentArea.value = textWithoutN ? `${finalN}\n${textWithoutN}` : finalN;
+
+        commentArea.dispatchEvent(new Event('input', { bubbles: true }));
+
+        // Czyszczenie formularza opóźnienia (tylko jeśli był faktycznie wypełniony)
+        if (delayTxt) {
+            document.getElementById('cn-del-nr').value = '';
+            document.getElementById('cn-del-st').value = '';
+            selectReason.value = '';
+            customReasonInput.value = '';
+            customReasonCont.style.display = 'none';
+            document.getElementById('cn-del-tm').value = '';
+            updatePreview();
+            
+            // Zwiń panel po udanym wstawieniu
+            if (btnDelay.getAttribute('aria-expanded') === 'true') {
+                btnDelay.click();
+            }
+        }
+
+        alert("Komentarz systemowy pomyślnie zaktualizowany!");
     };
 
+    // Podpięcie ręcznego przycisku Przelicz
     document.getElementById('cn-c').onclick = calculate;
-    document.getElementById('cn-i').onclick = insertTime;
 })();
