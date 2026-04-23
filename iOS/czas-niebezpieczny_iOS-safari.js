@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         Czas Niebezpieczny (Mobile v3.11)
+// @name         Czas Niebezpieczny (Mobile v3.12)
 // @namespace    http://tampermonkey.net/
-// @version      3.11
-// @description  Czytelna nakładka z auto-aktualizacją i naprawioną agresywną detekcją czasów. Autorzy: Piotr M 🚂 & Gemini
+// @version      3.12
+// @description  Czytelna nakładka z auto-aktualizacją i poprawną detekcją input[type="time"]. Autorzy: Piotr M 🚂 & Gemini
 // @author       Piotr M 🚂 & Gemini
 // @match        *://irena1.intercity.pl/*
 // @match        *://portal.intercity.pl/mbweb/main/matter/pad/main-menu*
@@ -12,9 +12,9 @@
 // ==/UserScript==
 
 /*
- * Wersja aplikacji: v3.11
+ * Wersja aplikacji: v3.12
  * Updated: 2026-04-23
- * Changes: Poprawka krytycznego błędu regex (\\d -> \d) blokującego całkowicie wyciąganie czasu.
+ * Changes: Precyzyjne pobieranie edytowanego czasu prosto z input[type="time"]. Omijanie ukrytych starych inputów w DOM.
  * Współautorzy: Piotr M 🚂 & Gemini
  */
 
@@ -23,7 +23,7 @@
 
     if (window.top !== window.self) return;
 
-    const CURRENT_VERSION = 3.11;
+    const CURRENT_VERSION = 3.12;
     const SCRIPT_URL = 'https://raw.githubusercontent.com/piotrrgw/wtyczka-IVU_safari/main/iOS/czas-niebezpieczny_iOS-safari.js';
 
     // --- BLOKADA POBIERANIA PLIKU 'logout' ---
@@ -154,7 +154,7 @@
         <div id="cn-l">Gotowy do pracy...</div>
         <div class="cn-ft">
             Współautorzy: Piotr M 🚂 & Gemini<br>
-            Wersja aplikacji: v3.11
+            Wersja aplikacji: v3.12
         </div>
     `;
     document.body.appendChild(box);
@@ -200,46 +200,28 @@
         return h * 60 + m;
     };
 
-    // NAPRAWIONA AGRESYWNA DETEKCJA CZASU (Poprawiony regex \d zamiast \\d)
+    // --- NOWA, BEZBŁĘDNA DETEKCJA CZASU OPARTA NA DANYCH OD UŻYTKOWNIKA ---
     const getActualTime = (container) => {
         if (!container) return null;
         
-        // 1. Sprawdzamy najczęstsze klasy używane przy modyfikacjach
-        const changedElement = container.querySelector('.changed, .changed-value, .changed-label, .changed-time, [title*="zmienion"]');
-        if (changedElement) {
-            if (changedElement.tagName === 'INPUT' && changedElement.value) {
-                const match = changedElement.value.match(/\d{1,2}:\d{2}/);
-                if (match) return match[0];
-            } else if (changedElement.textContent) {
-                const match = changedElement.textContent.match(/\d{1,2}:\d{2}/);
-                if (match) return match[0];
-            }
+        // 1. Omijamy ukryte inputy i celujemy prosto w natywny input time (lub tekstowy z klasą IVU)
+        const timeInput = container.querySelector('input[type="time"].actual-duty-time-field-input, input[type="time"]');
+        if (timeInput && timeInput.value) {
+            return timeInput.value;
+        }
+
+        // 2. Fallback na widoczny input tekstowy (gdyby użyto przeglądarki bez wsparcia type="time")
+        const textInput = container.querySelector('input.actual-duty-time-field-input:not([type="hidden"])');
+        if (textInput && textInput.value) {
+            const match = textInput.value.match(/\d{1,2}:\d{2}/);
+            if (match) return match[0];
         }
         
-        // 2. Jeśli brak specyficznych klas, filtrujemy inputy
-        const inputs = Array.from(container.querySelectorAll('input'))
-                            .filter(i => i.type !== 'hidden' && i.style.display !== 'none');
-        
-        if (inputs.length > 0) {
-            // Szukamy aktywnego (system często zostawia stare pole zablokowane na "readonly" lub "disabled")
-            const activeInput = inputs.find(i => !i.readOnly && !i.disabled);
-            if (activeInput && activeInput.value && activeInput.value.match(/\d{1,2}:\d{2}/)) {
-                return activeInput.value.match(/\d{1,2}:\d{2}/)[0];
-            }
-            
-            // Fallback do pierwszego widocznego inputa zawierającego godzinę
-            for (let input of inputs) {
-                if (input.value && input.value.match(/\d{1,2}:\d{2}/)) {
-                    return input.value.match(/\d{1,2}:\d{2}/)[0];
-                }
-            }
-        }
-        
-        // 3. Ostatnia deska ratunku - skanowanie wyświetlanego tekstu w kontenerze
-        const textMatch = container.innerText.match(/\d{1,2}:\d{2}/g);
-        if (textMatch && textMatch.length > 0) {
-            // Jeśli znajdzie wiele czasów, bierzemy ten ostatni (z reguły to on nadpisuje widok)
-            return textMatch[textMatch.length - 1];
+        // 3. Fallback na etykietę changed-label
+        const changedLabel = container.querySelector('.changed-label');
+        if (changedLabel && changedLabel.textContent) {
+            const match = changedLabel.textContent.match(/\d{1,2}:\d{2}/);
+            if (match) return match[0];
         }
 
         return null;
