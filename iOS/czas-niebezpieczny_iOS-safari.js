@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         Czas Niebezpieczny (Mobile v3.10)
+// @name         Czas Niebezpieczny (Mobile v3.11)
 // @namespace    http://tampermonkey.net/
-// @version      3.10
-// @description  Czytelna nakładka z auto-aktualizacją i agresywną detekcją edytowanych czasów. Autorzy: Piotr M 🚂 & Gemini
+// @version      3.11
+// @description  Czytelna nakładka z auto-aktualizacją i naprawioną agresywną detekcją czasów. Autorzy: Piotr M 🚂 & Gemini
 // @author       Piotr M 🚂 & Gemini
 // @match        *://irena1.intercity.pl/*
 // @match        *://portal.intercity.pl/mbweb/main/matter/pad/main-menu*
@@ -12,9 +12,9 @@
 // ==/UserScript==
 
 /*
- * Wersja aplikacji: v3.10
+ * Wersja aplikacji: v3.11
  * Updated: 2026-04-23
- * Changes: Wdrożono nowy, agresywny algorytm detekcji edytowanych czasów (obsługa readonly, ukrytych inputów i klas changed-value).
+ * Changes: Poprawka krytycznego błędu regex (\\d -> \d) blokującego całkowicie wyciąganie czasu.
  * Współautorzy: Piotr M 🚂 & Gemini
  */
 
@@ -23,7 +23,7 @@
 
     if (window.top !== window.self) return;
 
-    const CURRENT_VERSION = 3.10;
+    const CURRENT_VERSION = 3.11;
     const SCRIPT_URL = 'https://raw.githubusercontent.com/piotrrgw/wtyczka-IVU_safari/main/iOS/czas-niebezpieczny_iOS-safari.js';
 
     // --- BLOKADA POBIERANIA PLIKU 'logout' ---
@@ -154,7 +154,7 @@
         <div id="cn-l">Gotowy do pracy...</div>
         <div class="cn-ft">
             Współautorzy: Piotr M 🚂 & Gemini<br>
-            Wersja aplikacji: v3.10
+            Wersja aplikacji: v3.11
         </div>
     `;
     document.body.appendChild(box);
@@ -200,7 +200,7 @@
         return h * 60 + m;
     };
 
-    // AGRESYWNA DETEKCJA CZASU
+    // NAPRAWIONA AGRESYWNA DETEKCJA CZASU (Poprawiony regex \d zamiast \\d)
     const getActualTime = (container) => {
         if (!container) return null;
         
@@ -208,10 +208,10 @@
         const changedElement = container.querySelector('.changed, .changed-value, .changed-label, .changed-time, [title*="zmienion"]');
         if (changedElement) {
             if (changedElement.tagName === 'INPUT' && changedElement.value) {
-                const match = changedElement.value.match(/\\d{1,2}:\\d{2}/);
+                const match = changedElement.value.match(/\d{1,2}:\d{2}/);
                 if (match) return match[0];
             } else if (changedElement.textContent) {
-                const match = changedElement.textContent.match(/\\d{1,2}:\\d{2}/);
+                const match = changedElement.textContent.match(/\d{1,2}:\d{2}/);
                 if (match) return match[0];
             }
         }
@@ -223,20 +223,20 @@
         if (inputs.length > 0) {
             // Szukamy aktywnego (system często zostawia stare pole zablokowane na "readonly" lub "disabled")
             const activeInput = inputs.find(i => !i.readOnly && !i.disabled);
-            if (activeInput && activeInput.value && activeInput.value.match(/\\d{1,2}:\\d{2}/)) {
-                return activeInput.value.match(/\\d{1,2}:\\d{2}/)[0];
+            if (activeInput && activeInput.value && activeInput.value.match(/\d{1,2}:\d{2}/)) {
+                return activeInput.value.match(/\d{1,2}:\d{2}/)[0];
             }
             
             // Fallback do pierwszego widocznego inputa zawierającego godzinę
             for (let input of inputs) {
-                if (input.value && input.value.match(/\\d{1,2}:\\d{2}/)) {
-                    return input.value.match(/\\d{1,2}:\\d{2}/)[0];
+                if (input.value && input.value.match(/\d{1,2}:\d{2}/)) {
+                    return input.value.match(/\d{1,2}:\d{2}/)[0];
                 }
             }
         }
         
         // 3. Ostatnia deska ratunku - skanowanie wyświetlanego tekstu w kontenerze
-        const textMatch = container.innerText.match(/\\d{1,2}:\\d{2}/g);
+        const textMatch = container.innerText.match(/\d{1,2}:\d{2}/g);
         if (textMatch && textMatch.length > 0) {
             // Jeśli znajdzie wiele czasów, bierzemy ten ostatni (z reguły to on nadpisuje widok)
             return textMatch[textMatch.length - 1];
