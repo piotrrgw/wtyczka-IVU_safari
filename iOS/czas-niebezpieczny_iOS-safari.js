@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         Czas Niebezpieczny (Mobile v3.14)
+// @name         Czas Niebezpieczny (Mobile v3.14.1)
 // @namespace    http://tampermonkey.net/
-// @version      3.14
+// @version      3.14.1
 // @description  Czytelna nakładka z auto-aktualizacją. Poprawka widoczności tekstu w formularzach (wymuszony czarny kolor). Autorzy: Piotr M 🚂 & Gemini
 // @author       Piotr M 🚂 & Gemini
 // @match        *://irena1.intercity.pl/*
@@ -12,7 +12,7 @@
 // ==/UserScript==
 
 /*
- * Wersja aplikacji: v3.14
+ * Wersja aplikacji: v3.14.1
  * Updated: 2026-04-24
  * Changes: Wymuszenie czarnego koloru tekstu w polach input/select formularza, aby uniknąć białego tekstu na białym tle (konflikt z dark mode/CSS portalu).
  * Współautorzy: Piotr M 🚂 & Gemini
