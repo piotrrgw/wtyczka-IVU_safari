@@ -67,7 +67,8 @@
         "11239": { name: "DK Objęcie pociągu", limit: 20 },
         "11240": { name: "DK Przekazanie pociągu", limit: 10 },
         "11245": { name: "DK Próba hamulca", limit: null },
-        "11243": { name: "DK Prace Manewrowe KP", limit: null }
+        "11243": { name: "DK Prace Manewrowe KP", limit: null },
+        "11243": { name: "DK Kierownik manewrów", limit: null }
     };
     
     const REASONS_JSON_URL = 'https://raw.githubusercontent.com/piotrrgw/wtyczka-IVU_safari/main/iOS/przyczyny.json';
